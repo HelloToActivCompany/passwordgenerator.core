@@ -8,15 +8,23 @@ namespace PasswordGenerator.Tests
     {
         [Test]        
         public void Generate_should_raise_exception_if_string_is_null()
-        {    
-            Assert.That(() => PasswordGenerator.Generate(null),
+        {
+            // arrange
+            IPasswordGenerator generator = new PasswordGenerator();
+
+            // act + assert
+            Assert.That(() => generator.Generate(null),
                 Throws.TypeOf<ArgumentNullException>());            
         }
 
         [Test]        
         public void Generate_shoul_raise_exception_if_string_is_empty()
-        {             
-            Assert.That(() => PasswordGenerator.Generate(""),
+        {
+            // arrange
+            IPasswordGenerator generator = new PasswordGenerator();
+
+            // act + assert        
+            Assert.That(() => generator.Generate(""),
                 Throws.TypeOf<ArgumentException>());
         }
     }

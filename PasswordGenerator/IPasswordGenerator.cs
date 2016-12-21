@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator
 {
-    interface IPasswordGenerator
+    public interface IPasswordGenerator
     {
         string Generate(string url);
     }
