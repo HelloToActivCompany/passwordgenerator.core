@@ -13,6 +13,9 @@ namespace PasswordGenerator
             if (url == null)
                 throw new ArgumentNullException();
 
+            if (url == "")
+                throw new ArgumentException();
+
             var password = "";
 
 

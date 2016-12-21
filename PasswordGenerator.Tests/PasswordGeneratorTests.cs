@@ -17,5 +17,17 @@ namespace PasswordGenerator.Tests
 
             //assert
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GenerateShoulRaiseExeptionIfStringIsEmpty()
+        {
+            //arrange
+
+            //act
+            var password = PasswordGenerator.Generate("");
+
+            //assert
+        }
     }
 }
