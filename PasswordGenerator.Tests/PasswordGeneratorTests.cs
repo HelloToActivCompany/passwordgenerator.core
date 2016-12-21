@@ -1,33 +1,23 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace PasswordGenerator.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class PasswordGeneratorTests
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void GenerateShouldRaiseExceptionIfStringIsNull()
-        {
-            //arrange
-
-            //act
-            var password = PasswordGenerator.Generate(null);
-
-            //assert
+        [Test]        
+        public void Generate_should_raise_exception_if_string_is_null()
+        {    
+            Assert.That(() => PasswordGenerator.Generate(null),
+                Throws.TypeOf<ArgumentNullException>());            
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void GenerateShoulRaiseExeptionIfStringIsEmpty()
-        {
-            //arrange
-
-            //act
-            var password = PasswordGenerator.Generate("");
-
-            //assert
+        [Test]        
+        public void Generate_shoul_raise_exception_if_string_is_empty()
+        {             
+            Assert.That(() => PasswordGenerator.Generate(""),
+                Throws.TypeOf<ArgumentException>());
         }
     }
 }
