@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator
 {
-    public class PasswordGenerator
+    public class PasswordGenerator : IPasswordGenerator
     {
-        public static string Generate(string url)
+        public string Generate(string url)
         {
             CheckNullOrEmptyURL(url);
 
@@ -16,7 +16,7 @@ namespace PasswordGenerator
             return password;
         }
 
-        private static void CheckNullOrEmptyURL(string url)
+        private void CheckNullOrEmptyURL(string url)
         {
             if (url == null)
                 throw new ArgumentNullException();
