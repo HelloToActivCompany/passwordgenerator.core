@@ -10,16 +10,19 @@ namespace PasswordGenerator
     {
         public static string Generate(string url)
         {
+            CheckNullOrEmptyURL(url);
+
+            var password = "";
+            return password;
+        }
+
+        private static void CheckNullOrEmptyURL(string url)
+        {
             if (url == null)
                 throw new ArgumentNullException();
 
             if (url == "")
                 throw new ArgumentException();
-
-            var password = "";
-
-
-            return password;
         }
     }
 }
