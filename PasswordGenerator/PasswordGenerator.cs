@@ -8,6 +8,15 @@ namespace PasswordGenerator
 {
     public class PasswordGenerator : IPasswordGenerator
     {
+        private ICryptographer cryptographer;
+
+        public PasswordGenerator() { }
+
+        public PasswordGenerator(ICryptographer cryptographer)
+        {
+            this.cryptographer = cryptographer;
+        }
+
         public string Generate(string url)
         {
             CheckNullOrEmptyURL(url);
