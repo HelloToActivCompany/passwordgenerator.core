@@ -18,7 +18,7 @@ namespace PasswordGenerator.Tests
         }
 
         [Test]        
-        public void Generate_shoul_raise_exception_if_string_is_empty()
+        public void Generate_should_raise_exception_if_string_is_empty()
         {
             // arrange
             IPasswordGenerator generator = new PasswordGenerator();
