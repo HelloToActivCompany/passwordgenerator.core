@@ -7,19 +7,31 @@ namespace PasswordGenerator.Tests
     public class PasswordGeneratorTests
     {
         IPasswordGenerator generator;
+        IPasswordGenerator generatorWithCryptographer;
+        ICryptographer cryptographer;
 
         [OneTimeSetUp]
         private void Initialize()
         {
-            //arrange
+            //arrange    
             generator = new PasswordGenerator();
+                   
+            cryptographer = new Md5Cryptographer();
+            generatorWithCryptographer = new PasswordGenerator(cryptographer);
+        }
+
+        [Test]
+        public void Check_instance_generator_whith_cryptografer()
+        {
+            //assert
+            Assert.That(generatorWithCryptographer != null);
         }
 
         [Test]        
         public void Generate_should_raise_exception_if_string_is_null()
         {
             // act + assert
-            Assert.That(() => generator.Generate(null),
+            Assert.That(() => generatorWithCryptographer.Generate(null),
                 Throws.TypeOf<ArgumentNullException>());            
         }
 
@@ -27,7 +39,7 @@ namespace PasswordGenerator.Tests
         public void Generate_should_raise_exception_if_string_is_empty()
         {
             // act + assert        
-            Assert.That(() => generator.Generate(""),
+            Assert.That(() => generatorWithCryptographer.Generate(""),
                 Throws.TypeOf<ArgumentException>());
         }
     }
