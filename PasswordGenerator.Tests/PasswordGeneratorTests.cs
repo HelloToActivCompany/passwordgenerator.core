@@ -6,12 +6,18 @@ namespace PasswordGenerator.Tests
     [TestFixture]
     public class PasswordGeneratorTests
     {
+        IPasswordGenerator generator;
+
+        [OneTimeSetUp]
+        private void Initialize()
+        {
+            //arrange
+            generator = new PasswordGenerator();
+        }
+
         [Test]        
         public void Generate_should_raise_exception_if_string_is_null()
         {
-            // arrange
-            IPasswordGenerator generator = new PasswordGenerator();
-
             // act + assert
             Assert.That(() => generator.Generate(null),
                 Throws.TypeOf<ArgumentNullException>());            
@@ -20,9 +26,6 @@ namespace PasswordGenerator.Tests
         [Test]        
         public void Generate_should_raise_exception_if_string_is_empty()
         {
-            // arrange
-            IPasswordGenerator generator = new PasswordGenerator();
-
             // act + assert        
             Assert.That(() => generator.Generate(""),
                 Throws.TypeOf<ArgumentException>());
