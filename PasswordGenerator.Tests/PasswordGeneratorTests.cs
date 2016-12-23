@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Moq;
 
 namespace PasswordGenerator.Tests
 {
@@ -8,16 +9,17 @@ namespace PasswordGenerator.Tests
     {
         IPasswordGenerator generator;
         IPasswordGenerator generatorWithCryptographer;
-        ICryptographer cryptographer;
 
         [OneTimeSetUp]
         public void Initialize()
         {
             //arrange    
             generator = new PasswordGenerator();
+            
+            Mock<ICryptographer> mock = new Mock<ICryptographer>();
+            mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns(String.Empty);
 
-            cryptographer = new Md5Cryptographer();
-            generatorWithCryptographer = new PasswordGenerator(cryptographer);
+            generatorWithCryptographer = new PasswordGenerator(mock.Object);
         }
 
         [Test]

@@ -8,7 +8,7 @@ namespace PasswordGenerator
 {
     public class Md5Cryptographer : ICryptographer
     {
-        public string encrypt(string input)
+        public string Encrypt(string input)
         {
             String md5str = String.Empty;
             return md5str;

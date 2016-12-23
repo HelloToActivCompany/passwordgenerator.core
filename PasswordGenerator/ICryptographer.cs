@@ -8,6 +8,6 @@ namespace PasswordGenerator
 {
     public interface ICryptographer
     {
-        string encrypt(string input);
+        string Encrypt(string input);
     }
 }
