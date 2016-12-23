@@ -27,21 +27,11 @@ namespace PasswordGenerator.Tests
         public void Check_md5_as_default_cryptographer()
         {
             //arrange   
-            System.Security.Cryptography.HashAlgorithm md5 = new System.Security.Cryptography.MD5Cng();
-                       
-            //act
-            byte[] data = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes("lalala"));
-
-            System.Text.StringBuilder sBuilder = new System.Text.StringBuilder();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-            string md5result = sBuilder.ToString();
+            var md5 = new System.Security.Cryptography.MD5Cng();
+            var expected = "9aa6e5f2256c17d2d430b100032b997c";
             
-            //assert
-            Assert.That(hashCryptographer.Encrypt("lalala") == md5result);
+            //act + assert
+            Assert.That(hashCryptographer.Encrypt("lalala") == expected);
         }
     }
 }
