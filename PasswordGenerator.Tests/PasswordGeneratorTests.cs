@@ -44,5 +44,20 @@ namespace PasswordGenerator.Tests
             Assert.That(() => generatorWithCryptographer.Generate(""),
                 Throws.TypeOf<ArgumentException>());
         }
+
+        [Test]
+        public void Url_in_generator_preraer_correctly()
+        {
+            //arrange
+            Mock<ICryptographer> mock = new Mock<ICryptographer>();
+            mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
+            IPasswordGenerator generatorWithoutCryptograp = new PasswordGenerator(mock.Object);
+
+            //act
+            string preparedUrl = generatorWithoutCryptograp.Generate(@"https://habrahabr.ru/post/150859/");
+
+            //assert
+            Assert.That(preparedUrl == "habrahabr.ru");
+        }
     }
 }

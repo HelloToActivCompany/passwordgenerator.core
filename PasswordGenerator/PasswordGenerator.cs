@@ -21,9 +21,22 @@ namespace PasswordGenerator
         {
             CheckNullOrEmptyURL(url);
 
-            var password = "";
+            string preparedUrl = PrepaerURL(url);       
+
+            string password = cryptographer.Encrypt(preparedUrl);
+
             return password;
         }
+        private string PrepaerURL(string url)
+        {
+            string preparedUrl = url;
+
+            preparedUrl = preparedUrl.Replace(@"http://", String.Empty);
+            preparedUrl = preparedUrl.Replace(@"https://", String.Empty);
+            preparedUrl = preparedUrl.Substring(0, preparedUrl.IndexOf(@"/"));
+
+            return preparedUrl;
+        } 
 
         private void CheckNullOrEmptyURL(string url)
         {
