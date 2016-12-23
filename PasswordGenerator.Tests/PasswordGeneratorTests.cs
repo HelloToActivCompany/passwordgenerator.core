@@ -7,14 +7,14 @@ namespace PasswordGenerator.Tests
     [TestFixture]
     public class PasswordGeneratorTests
     {
-        IPasswordGenerator generator;
+        IPasswordGenerator generatorAsDefault;
         IPasswordGenerator generatorWithCryptographer;
 
         [OneTimeSetUp]
         public void Initialize()
         {
             //arrange    
-            generator = new PasswordGenerator();
+            generatorAsDefault = new PasswordGenerator();
             
             Mock<ICryptographer> mock = new Mock<ICryptographer>();
             mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns(String.Empty);
