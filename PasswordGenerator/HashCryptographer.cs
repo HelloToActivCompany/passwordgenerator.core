@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Linq;
 
 namespace PasswordGenerator
 {
@@ -15,14 +16,9 @@ namespace PasswordGenerator
         {
             byte[] data = algorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-            StringBuilder sBuilder = new StringBuilder();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
+            var result = data.Select<byte, string>(x => x.ToString("x2")).Aggregate("", (str, chr) => str + chr);
             
-            return sBuilder.ToString();
+            return result;
         }
     }
 }
