@@ -21,7 +21,7 @@ namespace PasswordGenerator.Tests
         }
 
         [Test]
-        public void Check_instance_generator_whith_cryptografer()
+        public void Check_instance_generator_with_cryptographer()
         {
             //assert
             Assert.That(generatorWithCryptographer != null);
