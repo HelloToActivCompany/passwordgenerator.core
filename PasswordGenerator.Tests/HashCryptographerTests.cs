@@ -17,7 +17,7 @@ namespace PasswordGenerator.Tests
         }
 
         [Test]
-        public void Check_instance_hashcryptographer()
+        public void Check_instance_HashCryptographer()
         {
             //assert
             Assert.That(hashCryptographer != null);
@@ -26,12 +26,8 @@ namespace PasswordGenerator.Tests
         [Test]
         public void Check_md5_as_default_cryptographer()
         {
-            //arrange   
-            var md5 = new System.Security.Cryptography.MD5Cng();
-            var expected = "9aa6e5f2256c17d2d430b100032b997c";
-            
             //act + assert
-            Assert.That(hashCryptographer.Encrypt("lalala") == expected);
+            Assert.That(hashCryptographer.Encrypt("lalala") == "9aa6e5f2256c17d2d430b100032b997c");
         }
     }
 }

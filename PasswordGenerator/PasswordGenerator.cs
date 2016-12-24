@@ -10,8 +10,6 @@ namespace PasswordGenerator
     {
         private ICryptographer cryptographer;
 
-        public PasswordGenerator() { }
-
         public PasswordGenerator(ICryptographer cryptographer)
         {
             this.cryptographer = cryptographer;
@@ -21,22 +19,12 @@ namespace PasswordGenerator
         {
             CheckNullOrEmptyURL(url);
 
-            string preparedUrl = PrepaerURL(url);       
+            string hostName = new Uri(url).Host;
 
-            string password = cryptographer.Encrypt(preparedUrl);
+            string password = cryptographer.Encrypt(hostName);
 
             return password;
         }
-        private string PrepaerURL(string url)
-        {
-            string preparedUrl = url;
-
-            preparedUrl = preparedUrl.Replace(@"http://", String.Empty);
-            preparedUrl = preparedUrl.Replace(@"https://", String.Empty);
-            preparedUrl = preparedUrl.Substring(0, preparedUrl.IndexOf(@"/"));
-
-            return preparedUrl;
-        } 
 
         private void CheckNullOrEmptyURL(string url)
         {

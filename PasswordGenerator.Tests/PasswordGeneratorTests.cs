@@ -7,33 +7,29 @@ namespace PasswordGenerator.Tests
     [TestFixture]
     public class PasswordGeneratorTests
     {
-        IPasswordGenerator generatorAsDefault;
-        IPasswordGenerator generatorWithCryptographer;
+        IPasswordGenerator generator;
 
         [OneTimeSetUp]
         public void Initialize()
         {
-            //arrange    
-            generatorAsDefault = new PasswordGenerator();
-            
+            //arrange            
             Mock<ICryptographer> mock = new Mock<ICryptographer>();
-            mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns(String.Empty);
-
-            generatorWithCryptographer = new PasswordGenerator(mock.Object);
+            mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
+            generator = new PasswordGenerator(mock.Object);
         }
 
         [Test]
         public void Check_instance_generator_with_cryptographer()
         {
             //assert
-            Assert.That(generatorWithCryptographer != null);
+            Assert.That(generator != null);
         }
 
         [Test]        
         public void Generate_should_raise_exception_if_string_is_null()
         {
             // act + assert
-            Assert.That(() => generatorWithCryptographer.Generate(null),
+            Assert.That(() => generator.Generate(null),
                 Throws.TypeOf<ArgumentNullException>());            
         }
 
@@ -41,23 +37,15 @@ namespace PasswordGenerator.Tests
         public void Generate_should_raise_exception_if_string_is_empty()
         {
             // act + assert        
-            Assert.That(() => generatorWithCryptographer.Generate(""),
+            Assert.That(() => generator.Generate(""),
                 Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
-        public void Url_in_generator_preraer_correctly()
+        public void Generate_should_create_password_for_url_as_hostname()
         {
-            //arrange
-            Mock<ICryptographer> mock = new Mock<ICryptographer>();
-            mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
-            IPasswordGenerator generatorWithoutCryptograp = new PasswordGenerator(mock.Object);
-
-            //act
-            string preparedUrl = generatorWithoutCryptograp.Generate(@"https://habrahabr.ru/post/150859/");
-
-            //assert
-            Assert.That(preparedUrl == "habrahabr.ru");
+            //act + assert
+            Assert.That(generator.Generate(@"https://habrahabr.ru/post/150859/") == "habrahabr.ru");
         }
     }
 }
