@@ -45,7 +45,7 @@ namespace PasswordGenerator.Tests
         public void Generate_should_create_password_for_url_as_hostname()
         {
             //act + assert
-            Assert.That(generator.Generate(@"https://habrahabr.ru/post/150859/") == "habrahabr.ru");
+            Assert.That(generator.Generate(@"https://www.habrahabr.ru/post/150859/") == "habrahabr.ru");
         }
 
         [Test]
