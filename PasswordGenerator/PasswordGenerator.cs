@@ -8,7 +8,7 @@ namespace PasswordGenerator
 {
     public class PasswordGenerator : IPasswordGenerator
     {
-        private ICryptographer cryptographer;
+        private readonly ICryptographer cryptographer;
 
         public PasswordGenerator(ICryptographer cryptographer)
         {

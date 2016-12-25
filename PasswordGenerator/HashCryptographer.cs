@@ -9,7 +9,14 @@ namespace PasswordGenerator
 {
     public class HashCryptographer : ICryptographer
     {
-        HashAlgorithm algorithm = new MD5Cng();
+        const string DEFAULT_HASH_ALGORITHM = "MD5";
+
+        private readonly HashAlgorithm algorithm;
+
+        public HashCryptographer(string hashName = DEFAULT_HASH_ALGORITHM)
+        {
+            algorithm = HashAlgorithm.Create(hashName);
+        }
 
         public string Encrypt(string input)
         {
