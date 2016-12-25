@@ -24,7 +24,8 @@ namespace PasswordGenerator
 
             try
             {
-                password = cryptographer.Encrypt(new Uri(input).Host);
+                var hostName = new Uri(input).Host;
+                password = cryptographer.Encrypt(hostName);
             }
             catch
             {
