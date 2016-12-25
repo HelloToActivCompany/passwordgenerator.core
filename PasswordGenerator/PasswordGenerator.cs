@@ -15,24 +15,23 @@ namespace PasswordGenerator
             this.cryptographer = cryptographer;
         }
 
-        public string Generate(string url)
+        public string Generate(string input)
         {
-            CheckNullOrEmptyURL(url);
+            if (String.IsNullOrEmpty(input))
+                throw new ArgumentException();
 
-            string hostName = new Uri(url).Host;
+            string password = "";
 
-            string password = cryptographer.Encrypt(hostName);
+            try
+            {
+                password = cryptographer.Encrypt(new Uri(input).Host);
+            }
+            catch
+            {
+                password = cryptographer.Encrypt(input);
+            }
 
             return password;
-        }
-
-        private void CheckNullOrEmptyURL(string url)
-        {
-            if (url == null)
-                throw new ArgumentNullException();
-
-            if (url == "")
-                throw new ArgumentException();
         }
     }
 }

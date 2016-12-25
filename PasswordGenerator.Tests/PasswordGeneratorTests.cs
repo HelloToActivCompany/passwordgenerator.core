@@ -30,7 +30,7 @@ namespace PasswordGenerator.Tests
         {
             // act + assert
             Assert.That(() => generator.Generate(null),
-                Throws.TypeOf<ArgumentNullException>());            
+                Throws.TypeOf<ArgumentException>());            
         }
 
         [Test]        
@@ -46,6 +46,13 @@ namespace PasswordGenerator.Tests
         {
             //act + assert
             Assert.That(generator.Generate(@"https://habrahabr.ru/post/150859/") == "habrahabr.ru");
+        }
+
+        [Test]
+        public void Generate_should_create_password_for_email()
+        {
+            //act + assert
+            Assert.That(generator.Generate(@"dmitriyanikin1991@gmail.com") == "dmitriyanikin1991@gmail.com");
         }
     }
 }
