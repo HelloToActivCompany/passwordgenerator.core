@@ -8,10 +8,13 @@ namespace PasswordGenerator
 {
     public class PasswordGenerator : IPasswordGenerator
     {
+        private readonly string key;
+
         private readonly ICryptographer cryptographer;
 
-        public PasswordGenerator(ICryptographer cryptographer)
+        public PasswordGenerator(ICryptographer cryptographer, string key)
         {
+            this.key = key;
             this.cryptographer = cryptographer;
         }
 
@@ -31,6 +34,10 @@ namespace PasswordGenerator
             {
                 password = cryptographer.Encrypt(input);
             }
+
+            password = key + password;
+
+            password = cryptographer.Encrypt(password);
 
             return password;
         }

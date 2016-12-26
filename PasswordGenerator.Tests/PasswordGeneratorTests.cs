@@ -8,6 +8,7 @@ namespace PasswordGenerator.Tests
     public class PasswordGeneratorTests
     {
         IPasswordGenerator generator;
+        string key;
 
         [OneTimeSetUp]
         public void Initialize()
@@ -15,7 +16,9 @@ namespace PasswordGenerator.Tests
             //arrange            
             Mock<ICryptographer> mock = new Mock<ICryptographer>();
             mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
-            generator = new PasswordGenerator(mock.Object);
+
+            key = "supersecretkey";
+            generator = new PasswordGenerator(mock.Object, key);
         }
 
         [Test]
@@ -45,14 +48,14 @@ namespace PasswordGenerator.Tests
         public void Generate_should_create_password_for_url_as_hostname()
         {
             //act + assert
-            Assert.That(generator.Generate(@"https://www.habrahabr.ru/post/150859/") == "habrahabr.ru");
+            Assert.That(generator.Generate(@"https://www.habrahabr.ru/post/150859/") == key + "habrahabr.ru");
         }
 
         [Test]
         public void Generate_should_create_password_for_email()
         {
             //act + assert
-            Assert.That(generator.Generate(@"dmitriyanikin1991@gmail.com") == "dmitriyanikin1991@gmail.com");
+            Assert.That(generator.Generate(@"dmitriyanikin1991@gmail.com") == key + "dmitriyanikin1991@gmail.com");
         }
     }
 }
