@@ -15,7 +15,7 @@ namespace PasswordGenerator
 
         public HashCryptographer(string hashName = DEFAULT_HASH_ALGORITHM)
         {
-            algorithm = HashAlgorithm.Create(hashName);
+            algorithm = HashAlgorithm.Create(hashName)?? HashAlgorithm.Create(DEFAULT_HASH_ALGORITHM);
         }
 
         public string Encrypt(string input)
