@@ -28,11 +28,11 @@ namespace PasswordGenerator
             if (IsValidUri(input))
             {
                 var hostName = new Uri(input).Host;
-                password = cryptographer.Encrypt(hostName.Replace("www.", ""));
+                password = hostName.Replace("www.", "");
             }
             else
             {
-                password = cryptographer.Encrypt(input);
+                password = input;
             }
 
             password = key + password;
