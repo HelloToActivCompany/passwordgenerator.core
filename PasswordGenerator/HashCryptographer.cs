@@ -22,7 +22,7 @@ namespace PasswordGenerator
         {
             byte[] data = algorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-            var result = data.Select<byte, string>(x => x.ToString("x2")).Aggregate("", (str, chr) => str + chr);
+            var result = data.Aggregate("", (str, chr) => str + chr.ToString("x2"));
             
             return result;
         }
