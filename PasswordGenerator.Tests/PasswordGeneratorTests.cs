@@ -16,7 +16,6 @@ namespace PasswordGenerator.Tests
             //arrange            
             Mock<ICryptographer> mock = new Mock<ICryptographer>();
             mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
-
             key = "supersecretkey";
             generator = new PasswordGenerator(mock.Object, key);
         }

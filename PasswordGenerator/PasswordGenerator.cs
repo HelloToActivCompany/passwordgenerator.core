@@ -14,8 +14,8 @@ namespace PasswordGenerator
 
         public PasswordGenerator(ICryptographer cryptographer, string key)
         {
-            this.key = key;
             this.cryptographer = cryptographer;
+            this.key = key;
         }
 
         public string Generate(string input)
@@ -23,35 +23,23 @@ namespace PasswordGenerator
             if (String.IsNullOrEmpty(input))
                 throw new ArgumentException();
 
-            string password = "";
+            var prepare = TryParseUri(input) ?? input;
 
-            if (IsValidUri(input))
-            {
-                var hostName = new Uri(input).Host;
-                password = hostName.Replace("www.", "");
-            }
-            else
-            {
-                password = input;
-            }
-
-            password = key + password;
-
-            password = cryptographer.Encrypt(password);
+            string password = cryptographer.Encrypt(key + prepare);
 
             return password;
         }
 
-        private bool IsValidUri(String uri)
+        private string TryParseUri(string input)
         {
             try
             {
-                new Uri(uri);
-                return true;
+                var hostName = new Uri(input).Host;
+                return cryptographer.Encrypt(hostName.Replace("www.", ""));
             }
             catch
             {
-                return false;
+                return null;
             }
         }
     }
