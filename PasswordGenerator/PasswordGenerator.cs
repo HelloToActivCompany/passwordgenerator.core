@@ -22,17 +22,30 @@ namespace PasswordGenerator
 
             string password = "";
 
-            try
+            if (IsValidUri(input))
             {
                 var hostName = new Uri(input).Host;
                 password = cryptographer.Encrypt(hostName.Replace("www.", ""));
             }
-            catch
+            else
             {
                 password = cryptographer.Encrypt(input);
             }
 
             return password;
+        }
+
+        private bool IsValidUri(String uri)
+        {
+            try
+            {
+                new Uri(uri);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -8,6 +8,6 @@ namespace PasswordGenerator
 {
     public interface IPasswordGenerator
     {
-        string Generate(string url);
+        string Generate(string input);
     }
 }
