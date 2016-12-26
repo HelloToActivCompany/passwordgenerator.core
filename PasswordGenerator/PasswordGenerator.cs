@@ -23,19 +23,19 @@ namespace PasswordGenerator
             if (String.IsNullOrEmpty(input))
                 throw new ArgumentException();
 
-            var prepare = TryParseUri(input) ?? input;
+            var prepare = TryParseHostNameUri(input) ?? input;
 
             string password = cryptographer.Encrypt(key + prepare);
 
             return password;
         }
 
-        private string TryParseUri(string input)
+        private string TryParseHostNameUri(string input)
         {
             try
             {
                 var hostName = new Uri(input).Host;
-                return cryptographer.Encrypt(hostName.Replace("www.", ""));
+                return hostName.Replace("www.", "");
             }
             catch
             {
