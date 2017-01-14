@@ -21,7 +21,7 @@ namespace PasswordGeneratorCore
 
             var prepare = TryParseHostNameUri(input) ?? input;
 
-            string password = _cryptographer.Encrypt(_key + prepare);
+            var password = _cryptographer.Encrypt(_key + prepare);
 
             return password;
         }
