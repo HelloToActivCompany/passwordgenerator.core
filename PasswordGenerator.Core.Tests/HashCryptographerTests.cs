@@ -1,10 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
 using Moq;
-using PasswordGeneratorCore;
 using PCLCrypto;
 
-namespace PasswordGeneratorCore.Tests
+namespace PasswordGenerator.Core.Tests
 {
     [TestFixture]
     public class HashCryptographerTests

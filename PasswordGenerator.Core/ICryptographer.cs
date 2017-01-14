@@ -1,4 +1,4 @@
-﻿namespace PasswordGeneratorCore
+﻿namespace PasswordGenerator.Core
 {
     public interface ICryptographer
     {

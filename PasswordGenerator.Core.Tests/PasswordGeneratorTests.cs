@@ -1,9 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
 using Moq;
-using PasswordGeneratorCore;
 
-namespace PasswordGeneratorCore.Tests
+namespace PasswordGenerator.Core.Tests
 {
     [TestFixture]
     public class PasswordGeneratorTests
@@ -18,7 +17,7 @@ namespace PasswordGeneratorCore.Tests
             var mock = new Mock<ICryptographer>();
             mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
             _key = "supersecretkey";
-            _generator = new PasswordGeneratorCore.PasswordGenerator(mock.Object, _key);
+            _generator = new PasswordGenerator(mock.Object, _key);
         }
 
         [Test]

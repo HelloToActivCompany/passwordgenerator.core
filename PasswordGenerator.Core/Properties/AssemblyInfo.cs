@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // Общие сведения о сборке определяются следующим 
 // набором атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные с этой сборкой.
-[assembly: AssemblyTitle("PasswordGeneratorCore")]
+[assembly: AssemblyTitle("PasswordGenerator.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MICROSOFT")]
-[assembly: AssemblyProduct("PasswordGeneratorCore")]
-[assembly: AssemblyCopyright("© MICROSOFT 2016")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("ru")]

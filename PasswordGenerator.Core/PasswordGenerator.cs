@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PasswordGeneratorCore
+namespace PasswordGenerator.Core
 {
     public class PasswordGenerator : IPasswordGenerator
     {

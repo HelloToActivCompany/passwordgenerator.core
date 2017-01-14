@@ -1,7 +1,7 @@
 ﻿using System;
 using PCLCrypto;
 
-namespace PasswordGeneratorCore
+namespace PasswordGenerator.Core
 {
     public class HashCryptographer: ICryptographer
     {
