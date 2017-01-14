@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PasswordGenerator
+namespace PasswordGeneratorCore
 {
     public class PasswordGenerator : IPasswordGenerator
     {
-        private readonly string key;
+        private readonly string _key;
 
-        private readonly ICryptographer cryptographer;
+        private readonly ICryptographer _cryptographer;
 
         public PasswordGenerator(ICryptographer cryptographer, string key)
         {
-            this.cryptographer = cryptographer;
-            this.key = key;
+            this._cryptographer = cryptographer;
+            this._key = key;
         }
 
         public string Generate(string input)
@@ -25,7 +21,7 @@ namespace PasswordGenerator
 
             var prepare = TryParseHostNameUri(input) ?? input;
 
-            string password = cryptographer.Encrypt(key + prepare);
+            string password = _cryptographer.Encrypt(_key + prepare);
 
             return password;
         }
