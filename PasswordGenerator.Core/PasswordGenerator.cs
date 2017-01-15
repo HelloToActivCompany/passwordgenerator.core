@@ -13,12 +13,17 @@ namespace PasswordGenerator.Core
             _key = key;
         }
 
-        public string Generate(string input)
+        public string Generate(string input, string login = "")
         {
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException();
 
             var prepare = TryParseHostNameUri(input);
+
+            //prepare += !string.IsNullOrEmpty(login) ? "/" + login : login;
+            if (!string.IsNullOrEmpty(login) && !prepare.Contains(login + "@"))
+                prepare += "/" + login;
+
 
             var password = _cryptographer.Encrypt(_key + prepare);
 

@@ -2,6 +2,6 @@
 {
     public interface IPasswordGenerator
     {
-        string Generate(string input);
+        string Generate(string input, string login = "");
     }
 }

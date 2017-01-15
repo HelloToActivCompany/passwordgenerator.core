@@ -9,6 +9,7 @@ namespace PasswordGenerator.Core.Tests
     {
         private IPasswordGenerator _generator;
         private string _key;
+        private string _login;
 
         [OneTimeSetUp]
         public void Initialize()
@@ -18,6 +19,7 @@ namespace PasswordGenerator.Core.Tests
             mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
             _key = "supersecretkey";
             _generator = new PasswordGenerator(mock.Object, _key);
+            _login = "anylogin";
         }
 
         [Test]
@@ -31,23 +33,24 @@ namespace PasswordGenerator.Core.Tests
         public void Generate_should_raise_exception_if_string_is_null()
         {
             // act + assert
-            Assert.That(() => _generator.Generate(null),
-                Throws.TypeOf<ArgumentException>());            
+            Assert.That(() => _generator.Generate(null), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => _generator.Generate(null, _login), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]        
         public void Generate_should_raise_exception_if_string_is_empty()
         {
             // act + assert        
-            Assert.That(() => _generator.Generate(""),
-                Throws.TypeOf<ArgumentException>());
+            Assert.That(() => _generator.Generate(""), Throws.TypeOf<ArgumentException>());
+            Assert.That(() => _generator.Generate("", _login), Throws.TypeOf<ArgumentException>());
         }
 
         [Test]
-        public void Generate_should_create_password_for_url_as_hostname()
+        public void Generate_should_create_password_for_url()
         {
             //act + assert
             Assert.That(_generator.Generate(@"https://www.habrahabr.ru/post/150859/") == _key + "habrahabr.ru");
+            Assert.That(_generator.Generate(@"https://www.habrahabr.ru/post/150859/", _login) == _key + "habrahabr.ru" + "/" + _login);
         }
 
         [Test]
@@ -55,6 +58,8 @@ namespace PasswordGenerator.Core.Tests
         {
             //act + assert
             Assert.That(_generator.Generate(@"dmitriyanikin1991@gmail.com") == _key + "dmitriyanikin1991@gmail.com");
+            Assert.That(_generator.Generate(@"dmitriyanikin1991@gmail.com", "dmitriyanikin1991") == _key + "dmitriyanikin1991@gmail.com");
+            Assert.That(_generator.Generate(@"dmitriyanikin1991@gmail.com", _login) == _key + "dmitriyanikin1991@gmail.com" + "/" + _login);
         }
     }
 }
