@@ -4,22 +4,21 @@ namespace PasswordGenerator.Core
 {
     public class PasswordGenerator : IPasswordGenerator
     {
-        private readonly string _key;
-
         private readonly ICryptographer _cryptographer;
+        private readonly string _key;
 
         public PasswordGenerator(ICryptographer cryptographer, string key)
         {
-            this._cryptographer = cryptographer;
-            this._key = key;
+            _cryptographer = cryptographer;
+            _key = key;
         }
 
         public string Generate(string input)
         {
-            if (String.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input))
                 throw new ArgumentException();
 
-            var prepare = TryParseHostNameUri(input) ?? input;
+            var prepare = TryParseHostNameUri(input);
 
             var password = _cryptographer.Encrypt(_key + prepare);
 
@@ -35,7 +34,7 @@ namespace PasswordGenerator.Core
             }
             catch
             {
-                return null;
+                return input;
             }
         }
     }

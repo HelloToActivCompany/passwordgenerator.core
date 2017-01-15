@@ -7,8 +7,8 @@ namespace PasswordGenerator.Core.Tests
     [TestFixture]
     public class PasswordGeneratorTests
     {
-        IPasswordGenerator _generator;
-        string _key;
+        private IPasswordGenerator _generator;
+        private string _key;
 
         [OneTimeSetUp]
         public void Initialize()
