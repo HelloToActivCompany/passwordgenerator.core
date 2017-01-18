@@ -46,20 +46,11 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void Generate_should_create_password_for_url()
+        public void Generate_should_create_password_for_any_string()
         {
             //act + assert
-            Assert.That(_generator.Generate(@"https://www.habrahabr.ru/post/150859/") == _key + "habrahabr.ru");
-            Assert.That(_generator.Generate(@"https://www.habrahabr.ru/post/150859/", _login) == _key + "habrahabr.ru" + "/" + _login);
-        }
-
-        [Test]
-        public void Generate_should_create_password_for_email()
-        {
-            //act + assert
-            Assert.That(_generator.Generate(@"dmitriyanikin1991@gmail.com") == _key + "dmitriyanikin1991@gmail.com");
-            Assert.That(_generator.Generate(@"dmitriyanikin1991@gmail.com", "dmitriyanikin1991") == _key + "dmitriyanikin1991@gmail.com");
-            Assert.That(_generator.Generate(@"dmitriyanikin1991@gmail.com", _login) == _key + "dmitriyanikin1991@gmail.com" + "/" + _login);
+            Assert.That(_generator.Generate("habrahabr.ru") == _key + "habrahabr.ru");
+            Assert.That(_generator.Generate("habrahabr.ru", _login) == _key + "habrahabr.ru" + "/" + _login);
         }
     }
 }

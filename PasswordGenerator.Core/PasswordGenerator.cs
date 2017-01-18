@@ -17,30 +17,16 @@ namespace PasswordGenerator.Core
         {
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException();
+            
+            var temp = input;
+            
+            if (!string.IsNullOrEmpty(login))
+                temp += "/" + login;
 
-            var prepare = TryParseHostNameUri(input);
-
-            //prepare += !string.IsNullOrEmpty(login) ? "/" + login : login;
-            if (!string.IsNullOrEmpty(login) && !prepare.Contains(login + "@"))
-                prepare += "/" + login;
-
-
-            var password = _cryptographer.Encrypt(_key + prepare);
+            var password = _cryptographer.Encrypt(_key + temp);
 
             return password;
         }
 
-        private string TryParseHostNameUri(string input)
-        {
-            try
-            {
-                var hostName = new Uri(input).Host;
-                return hostName.Replace("www.", "");
-            }
-            catch
-            {
-                return input;
-            }
-        }
     }
 }
