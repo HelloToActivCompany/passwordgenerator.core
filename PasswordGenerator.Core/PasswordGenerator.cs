@@ -18,12 +18,12 @@ namespace PasswordGenerator.Core
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException();
             
-            var temp = input;
+            var forEncrypt = input;
             
             if (!string.IsNullOrEmpty(login))
-                temp += "/" + login;
+                forEncrypt += "/" + login;
 
-            var password = _cryptographer.Encrypt(_key + temp);
+            var password = _cryptographer.Encrypt(_key + forEncrypt);
 
             return password;
         }

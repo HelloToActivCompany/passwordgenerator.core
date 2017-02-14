@@ -7,50 +7,38 @@ namespace PasswordGenerator.Core.Tests
     [TestFixture]
     public class PasswordGeneratorTests
     {
-        private IPasswordGenerator _generator;
-        private string _key;
-        private string _login;
-
-        [OneTimeSetUp]
-        public void Initialize()
+        [TestCase("")]
+        [TestCase(null)]       
+        public void Generate_IfNullOrEmptyInput_Throw(string input)
         {
-            //arrange            
-            var mock = new Mock<ICryptographer>();
-            mock.Setup(gen => gen.Encrypt(It.IsAny<string>())).Returns<string>(name => name);
-            _key = "supersecretkey";
-            _generator = new PasswordGenerator(mock.Object, _key);
-            _login = "anylogin";
+            //arrange
+            var generator = GetGenerator();
+
+            //act + assert          
+            Assert.That(() => generator.Generate(input), Throws.TypeOf<ArgumentException>());
         }
 
-        [Test]
-        public void Check_instance_generator_with_cryptographer()
+        [TestCase("habrahabr.ru", "alksar")]
+        [TestCase("habrahabr.ru", "")]
+        [TestCase("habrahabr.ru", null)]
+        [TestCase("vk.com", "alksar")]
+        [TestCase("vk.com", "")]
+        [TestCase("vk.com", null)]
+        public void Generate_ForAnyNotNullOrEmptyInputAndAnyLogin_GeneratePassword(string input, string login)
         {
-            //assert
-            Assert.That(_generator != null);
+            //arrange
+            var stubCryptographer = new Mock<ICryptographer>(); 
+            stubCryptographer.Setup(m => m.Encrypt(It.IsAny<string>())).Returns("12345");
+
+            var generator = new PasswordGenerator(stubCryptographer.Object, "secret");
+
+            //act + assert            
+            Assert.That(generator.Generate(input, login) == "12345");
         }
 
-        [Test]        
-        public void Generate_should_raise_exception_if_string_is_null()
+        private IPasswordGenerator GetGenerator()
         {
-            // act + assert
-            Assert.That(() => _generator.Generate(null), Throws.TypeOf<ArgumentException>());
-            Assert.That(() => _generator.Generate(null, _login), Throws.TypeOf<ArgumentException>());
-        }
-
-        [Test]        
-        public void Generate_should_raise_exception_if_string_is_empty()
-        {
-            // act + assert        
-            Assert.That(() => _generator.Generate(""), Throws.TypeOf<ArgumentException>());
-            Assert.That(() => _generator.Generate("", _login), Throws.TypeOf<ArgumentException>());
-        }
-
-        [Test]
-        public void Generate_should_create_password_for_any_string()
-        {
-            //act + assert
-            Assert.That(_generator.Generate("habrahabr.ru") == _key + "habrahabr.ru");
-            Assert.That(_generator.Generate("habrahabr.ru", _login) == _key + "habrahabr.ru" + "/" + _login);
+            return new PasswordGenerator(new HashCryptographer(PCLCrypto.HashAlgorithm.Md5), "key");
         }
     }
 }

@@ -8,30 +8,38 @@ namespace PasswordGenerator.Core.Tests
     [TestFixture]
     public class HashCryptographerTests
     {
-        ICryptographer _hashCryptographer;
-
-        [OneTimeSetUp]
-        public void Initialize()
+        [Test]
+        public void Encrypt_ForEqualStrings_GenerateEqualCrypts()
         {
             //arrange
-            _hashCryptographer = new HashCryptographer();
+            var cryptographer = GetCryptographer();
+
+            //act
+            string crypt1 = cryptographer.Encrypt("SomeString");
+            string crypt2 = cryptographer.Encrypt("SomeString");
+
+            //assert
+            Assert.AreEqual(crypt1, crypt2);
         }
 
         [Test]
-        public void Encrypt_for_not_null_or_empty_param_return_value_is_not_null_or_empty()
-        {
-            //act + assert
-            Assert.That(!string.IsNullOrEmpty(_hashCryptographer.Encrypt("default")));
-        }
-
-        [Test]
-        public void Constructor_by_default_is_Md5()
+        public void Constructor_ByDefault_CreateMd5Cryptographer()
         {
             //arrange
-            ICryptographer md5Cryptographer = new HashCryptographer(HashAlgorithm.Md5);
+            var cryptographerByDefault = GetCryptographer();
+            var md5Cryptographer = new HashCryptographer(HashAlgorithm.Md5);
 
-            //act + assert
-            Assert.That(_hashCryptographer.Encrypt("") == md5Cryptographer.Encrypt(""));
+            //act
+            var cryptByDefault = cryptographerByDefault.Encrypt("test");
+            var md5Crypt = md5Cryptographer.Encrypt("test");
+
+            //assert
+            Assert.AreEqual(cryptByDefault, md5Crypt);
+        }
+
+        private ICryptographer GetCryptographer()
+        {
+            return new HashCryptographer();
         }
     }
 }
