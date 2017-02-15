@@ -12,12 +12,11 @@ namespace PasswordGenerator.Core
             _hasher = WinRTCrypto.HashAlgorithmProvider.OpenAlgorithm(algorithm);
         }
 
-        public string Encrypt(string input)
+        public byte[] Encrypt(string input)
         {
             var data = System.Text.Encoding.UTF8.GetBytes(input);
-            var hash = _hasher.HashData(data);
-            var hashBase64 = Convert.ToBase64String(hash);
-            return hashBase64;
+            var hash = _hasher.HashData(data);            
+            return hash;
         }
     }
 }

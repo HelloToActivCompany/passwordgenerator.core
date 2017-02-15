@@ -15,8 +15,8 @@ namespace PasswordGenerator.Core.Tests
             var cryptographer = GetCryptographer();
 
             //act
-            string crypt1 = cryptographer.Encrypt("SomeString");
-            string crypt2 = cryptographer.Encrypt("SomeString");
+            var crypt1 = cryptographer.Encrypt("SomeString");
+            var crypt2 = cryptographer.Encrypt("SomeString");
 
             //assert
             Assert.AreEqual(crypt1, crypt2);

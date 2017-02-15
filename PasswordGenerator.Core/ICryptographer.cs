@@ -2,6 +2,6 @@
 {
     public interface ICryptographer
     {
-        string Encrypt(string input);
+        byte[] Encrypt(string input);
     }
 }
