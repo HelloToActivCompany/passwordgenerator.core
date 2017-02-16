@@ -59,8 +59,9 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [TestCase("")]
-        [TestCase(null)]       
-        public void Generate_IfNullOrEmptyInput_Throw(string input)
+        [TestCase(null)]
+        [TestCase("     ")]
+        public void Generate_IfNullOrWhiteSpace_Throw(string input)
         {
             //arrange
             var generator = GetGenerator();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace PasswordGenerator.Core
 {
@@ -40,7 +41,7 @@ namespace PasswordGenerator.Core
 
         public string Generate(PasswordDescriptor descriptor, string input)
         {
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrWhiteSpace(input))
                 throw new ArgumentException("input");
 
             string forEncrypt = _key + input;
@@ -101,14 +102,14 @@ namespace PasswordGenerator.Core
         private string AddDeficientAccordingToDescription(string password, PasswordDescriptor descriptor)
         {
             var lockedIndices = new List<int>();
-
-            if (descriptor.LowerCase && (String.Equals(password.ToUpper(), password, StringComparison.Ordinal)))            
-                password = AddSymbol(password, Base91Coder.GetLowerCaseChars(), lockedIndices);                
             
-            if (descriptor.UpperCase && (String.Equals(password.ToLower(), password, StringComparison.Ordinal)))            
+            if (descriptor.LowerCase && !Regex.IsMatch(password, "[a-z]"))            
+                password = AddSymbol(password, Base91Coder.GetLowerCaseChars(), lockedIndices);                
+           
+            if (descriptor.UpperCase && !Regex.IsMatch(password, "[A-Z]"))            
                 password = AddSymbol(password, Base91Coder.GetUpperCaseChars(), lockedIndices);
             
-            if (descriptor.Digits && (!password.ToCharArray().Any(c => char.IsDigit(c))))            
+            if (descriptor.Digits && !Regex.IsMatch(password, "[0-9]"))            
                 password = AddSymbol(password, Base91Coder.GetDigits(), lockedIndices);
             
             if (descriptor.SpecialSymbols && (!password.ToCharArray().Any(c => Base91Coder.CharIsSpecial(c))))            
@@ -124,9 +125,10 @@ namespace PasswordGenerator.Core
 
             int indexInStr = aggregateHashValue % str.Length;
 
-            
-            while (!lockedIndices.All(i => i != indexInStr))
-                indexInStr = (indexInStr + aggregateHashValue) % str.Length;
+            while (lockedIndices.Any(i => i == indexInStr))
+            {
+                indexInStr = (str[indexInStr] + aggregateHashValue) % str.Length;
+            }
             
             lockedIndices.Add(indexInStr);
 
