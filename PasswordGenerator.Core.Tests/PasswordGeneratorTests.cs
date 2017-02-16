@@ -8,7 +8,7 @@ namespace PasswordGenerator.Core.Tests
     public class PasswordGeneratorTests
     {
         [Test]
-        public void PswdDescriptorSet_ForPasswordLengthBelow_6_SetPasswordLength_6()
+        public void PswdDescriptor_ForPasswordLengthBelow6_SetPasswordLength6()
         {
             //arrange
             var generator = GetGenerator();
@@ -24,7 +24,7 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void PswdDescriptorSet_ForPasswordLengthAbove_40_SetPasswordLength_40()
+        public void PswdDescriptor_ForPasswordLengthAbove40_SetPasswordLength40()
         {
             //arrange
             var generator = GetGenerator();
