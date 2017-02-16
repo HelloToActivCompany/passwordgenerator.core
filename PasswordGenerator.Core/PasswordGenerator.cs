@@ -114,7 +114,6 @@ namespace PasswordGenerator.Core
             
             if (descriptor.SpecialSymbols && (!password.ToCharArray().Any(c => Base91Coder.CharIsSpecial(c))))            
                 password = AddSymbol(password, Base91Coder.GetSpecialChars(), lockedIndices);
-            
 
             return password;
         }
