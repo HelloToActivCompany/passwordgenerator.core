@@ -69,22 +69,22 @@ namespace PasswordGenerator.Core.Tests
             Assert.That(() => generator.Generate(input), Throws.TypeOf<ArgumentException>());
         }
 
-        [TestCase(false, false, false, true, 11)]
-        [TestCase(false, false, true, false, 12)]
-        [TestCase(false, false, true, true, 13)]
-        [TestCase(false, true, false, false, 14)]
-        [TestCase(false, true, false, true, 15)]
-        [TestCase(false, true, true, false, 16)]
-        [TestCase(false, true, true, true, 17)]
-        [TestCase(true, false, false, false, 18)]
-        [TestCase(true, false, false, true, 19)]
-        [TestCase(true, false, true, false, 20)]
-        [TestCase(true, false, true, true, 21)]
-        [TestCase(true, true, false, false, 22)]
-        [TestCase(true, true, false, true, 23)]
-        [TestCase(true, true, true, false, 24)]
-        [TestCase(true, true, true, true, 25)]
-        public void Generate_WithDescriptor_ReturnPasswordMatchesDescriptor(bool lowerCase, bool upperCase, 
+        [TestCase("sadqq", false, false, false, true, 11)]
+        [TestCase("31r2qff", false, false, true, false, 12)]
+        [TestCase("dsfewdfwqecw2f32ff23f2q", false, false, true, true, 13)]
+        [TestCase("999", false, true, false, false, 14)]
+        [TestCase("1", false, true, false, true, 15)]
+        [TestCase("h65hg3", false, true, true, false, 16)]
+        [TestCase("fsdf2", false, true, true, true, 17)]
+        [TestCase("333ffz.com", true, false, false, false, 18)]
+        [TestCase("0johufhd", true, false, false, true, 19)]
+        [TestCase("thds4weufgfit6srtdu6s", true, false, true, false, 20)]
+        [TestCase("joi08976rdxhfr63", true, false, true, true, 21)]
+        [TestCase("uyuyuiyiuiyuio", true, true, false, false, 22)]
+        [TestCase("czwsaxcxe", true, true, false, true, 23)]
+        [TestCase("pl,mmjuugvvfeesz", true, true, true, false, 24)]
+        [TestCase("7887!!yfjy54", true, true, true, true, 25)]
+        public void Generate_WithDescriptor_ReturnPasswordMatchesDescriptor(string input, bool lowerCase, bool upperCase, 
                                                                                 bool digits, bool specialSymbols, int passwordLength)
         {
             //arrange
@@ -100,7 +100,7 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            var password = generator.Generate(descriptor, "input");
+            var password = generator.Generate(descriptor, input);
 
             //assert
             Assert.IsTrue(IsPasswordMatchesDescription(password, descriptor));
@@ -125,7 +125,7 @@ namespace PasswordGenerator.Core.Tests
                 if (char.IsDigit(c))    currentDescriptor.Digits = true;
                 if (char.IsLower(c))    currentDescriptor.LowerCase = true;
                 if (char.IsUpper(c))    currentDescriptor.UpperCase= true;
-                if (IsSpecialSymbol(c)) currentDescriptor.SpecialSymbols = true;
+                if (Base91Coder.CharIsSpecial(c)) currentDescriptor.SpecialSymbols = true;
 
                 if (currentDescriptor.LowerCase && currentDescriptor.UpperCase &&
                     currentDescriptor.Digits && currentDescriptor.SpecialSymbols)
@@ -133,11 +133,6 @@ namespace PasswordGenerator.Core.Tests
             }
 
             return currentDescriptor.Equals(descriptor);
-        }
-
-        private bool IsSpecialSymbol(char c)
-        {
-            return "!#$%&()*+,./:;<=>?@[]^_`{|}~\"".IndexOf(c) != -1;
         }
 
         private PasswordGenerator GetGenerator()

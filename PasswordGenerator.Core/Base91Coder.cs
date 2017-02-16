@@ -19,6 +19,31 @@ namespace PasswordGenerator.Core
             '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~', '"'
         };
 
+        public static char[] GetLowerCaseChars()
+        {
+            return "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+        }
+
+        public static char[] GetUpperCaseChars()
+        {
+            return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        }
+
+        public static char[] GetDigits()
+        {
+            return "0123456789".ToCharArray();
+        }
+
+        public static char[] GetSpecialChars()
+        {
+            return "!#$%&()*+,./:;<=>?@[]^_`{|}~\"".ToCharArray();
+        }
+
+        public static bool CharIsSpecial(char c)
+        {
+            return GetSpecialChars().Any(item => item == c);
+        }
+
         public string ToBase91String(byte[] data)
         {
             string base91String = "";

@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace PasswordGenerator.Core
 {
@@ -43,7 +45,7 @@ namespace PasswordGenerator.Core
 
             string forEncrypt = _key + input;
 
-            string password = Encrypt(forEncrypt, descriptor);                       
+            string password = GeneratePasswordInAccordanceWithDescriptor(forEncrypt, descriptor);                       
 
             return password;
         }
@@ -52,29 +54,103 @@ namespace PasswordGenerator.Core
         {
             return Generate(PswdDescriptor, input);
         }
-
-        private string Encrypt(string data, PasswordDescriptor descriptor)
+       
+        private string GeneratePasswordInAccordanceWithDescriptor(string input, PasswordDescriptor descriptor)
         {
-            byte[] crypt =_cryptographer.Encrypt(data);
-            
+            byte[] crypt = _cryptographer.Encrypt(input);
+
             string password = coder.ToBase91String(crypt);
 
-            while (password.Length < descriptor.PasswordLength)
-                password += _cryptographer.Encrypt(password);
+            password = FilterPassword(password, descriptor);
 
-            password = AdaptPasswordToThePasswordDescriptor(password, descriptor);
+            while (password.Length < descriptor.PasswordLength)
+            {
+                var nextIteration = password;
+                var nextFiltred = "";
+
+                do
+                {
+                    nextIteration = coder.ToBase91String(_cryptographer.Encrypt(nextIteration));
+                    nextFiltred = FilterPassword(nextIteration, descriptor);
+                }
+                while (nextFiltred.Length == 0);
+                
+                password += nextFiltred;
+            }
+
+            if (password.Length > descriptor.PasswordLength)
+                password = password.Substring(0, descriptor.PasswordLength);
+
+            password = AddDeficientAccordingToDescription(password, descriptor);
+            
+            return password;
+        }
+
+        private string FilterPassword(string password, PasswordDescriptor descriptor)
+        {
+            return
+                new String(password.ToCharArray().Where(c =>
+                {
+                    return (descriptor.Digits || !char.IsDigit(c))
+                            && (descriptor.LowerCase || !char.IsLower(c))
+                            && (descriptor.UpperCase || !char.IsUpper(c))
+                            && (descriptor.SpecialSymbols || !Base91Coder.CharIsSpecial(c));
+                }).ToArray());
+        }
+        
+        private string AddDeficientAccordingToDescription(string password, PasswordDescriptor descriptor)
+        {
+            var lockedIndices = new List<int>();
+
+            if (descriptor.LowerCase && (String.Equals(password.ToUpper(), password, StringComparison.Ordinal)))            
+                password = AddSymbol(password, Base91Coder.GetLowerCaseChars(), lockedIndices);                
+            
+            if (descriptor.UpperCase && (String.Equals(password.ToLower(), password, StringComparison.Ordinal)))            
+                password = AddSymbol(password, Base91Coder.GetUpperCaseChars(), lockedIndices);
+            
+            if (descriptor.Digits && (!password.ToCharArray().Any(c => char.IsDigit(c))))            
+                password = AddSymbol(password, Base91Coder.GetDigits(), lockedIndices);
+            
+            if (descriptor.SpecialSymbols && (!password.ToCharArray().Any(c => Base91Coder.CharIsSpecial(c))))            
+                password = AddSymbol(password, Base91Coder.GetSpecialChars(), lockedIndices);
+            
 
             return password;
         }
 
-        private string AdaptPasswordToThePasswordDescriptor(string password, PasswordDescriptor descriptor)
+        private string AddSymbol(string str, char[] charSet, List<int> lockedIndices)
         {
-            if (password.Length > descriptor.PasswordLength)
-                password = password.Substring(0, descriptor.PasswordLength);
+            int aggregateHashValue = GetAggregateHashValue(str);
 
-            //TO DO:: realise the logic
+            int indexInStr = aggregateHashValue % str.Length;
 
-            return password;
+            
+            while (!lockedIndices.All(i => i != indexInStr))
+                indexInStr = (indexInStr + aggregateHashValue) % str.Length;
+            
+            lockedIndices.Add(indexInStr);
+
+            char adding = GetAddingChar(str, charSet);
+
+            return str.Substring(0, indexInStr) + adding.ToString() + str.Substring(indexInStr + 1);
+        }
+
+        private int GetAggregateHashValue(string str)
+        {
+            var hash = _cryptographer.Encrypt(str);
+
+            int aggregateHash = hash.Aggregate(0, (s, i) => s + i);
+
+            return aggregateHash;
+        }
+
+        private char GetAddingChar(string str, char[] charSet)
+        {
+            int aggregateHashValue = GetAggregateHashValue(str);
+
+            int index = aggregateHashValue % charSet.Length;
+
+            return charSet[index];
         }
 
         public struct PasswordDescriptor
