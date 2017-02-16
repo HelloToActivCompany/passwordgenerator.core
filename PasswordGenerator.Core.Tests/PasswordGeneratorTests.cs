@@ -13,8 +13,10 @@ namespace PasswordGenerator.Core.Tests
             //arrange
             var generator = GetGenerator();
 
-            var shortPasswordDescriptor = new PasswordGenerator.PasswordDescriptor();
-            shortPasswordDescriptor.PasswordLength = 5;
+            var shortPasswordDescriptor = new PasswordGenerator.PasswordDescriptor()
+            {
+                PasswordLength = 5,
+            };            
 
             //act
             generator.PswdDescriptor = shortPasswordDescriptor;
@@ -29,8 +31,10 @@ namespace PasswordGenerator.Core.Tests
             //arrange
             var generator = GetGenerator();
 
-            var longPasswordDescriptor = new PasswordGenerator.PasswordDescriptor();
-            longPasswordDescriptor.PasswordLength = 41;
+            var longPasswordDescriptor = new PasswordGenerator.PasswordDescriptor()
+            {
+                PasswordLength = 41,
+            };            
 
             //act
             generator.PswdDescriptor = longPasswordDescriptor;
