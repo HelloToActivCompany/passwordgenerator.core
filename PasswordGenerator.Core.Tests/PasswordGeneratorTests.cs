@@ -143,6 +143,27 @@ namespace PasswordGenerator.Core.Tests
         private PasswordGenerator GetGenerator()
         {
             return new PasswordGenerator(new HashCryptographer(PCLCrypto.HashAlgorithm.Md5), "key");
+        }
+        
+        [Test]
+        public void Generate_ttt()
+        {
+            var descriptor = new PasswordGenerator.PasswordDescriptor
+            {
+                LowerCase = true,
+                UpperCase = true,
+                Digits = true,
+                SpecialSymbols = true,
+                PasswordLength = 7
+            };
+
+            var input = "bzxc't/fC>uR@<F-_8M;=igeH";
+            var key = "5n@)2O+.h\"8I";
+
+            var generator = new PasswordGenerator(new HashCryptographer(), key, descriptor);
+            var password = generator.Generate(input);
+
+            Assert.IsTrue(IsPasswordMatchesDescription(password, descriptor));
         }        
     }
 }

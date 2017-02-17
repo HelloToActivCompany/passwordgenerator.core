@@ -35,8 +35,8 @@ namespace PasswordGenerator.Core
         {
             _cryptographer = cryptographer;
             _key = key;
-            
-            PswdDescriptor = descriptor ?? GetDefaultPasswordDescriptor();            
+
+            PswdDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -46,7 +46,7 @@ namespace PasswordGenerator.Core
 
             string forEncrypt = _key + input;
 
-            string password = GeneratePasswordInAccordanceWithDescriptor(forEncrypt, descriptor);                       
+            string password = GeneratePasswordInAccordanceWithDescriptor(forEncrypt, descriptor);
 
             return password;
         }
@@ -55,7 +55,7 @@ namespace PasswordGenerator.Core
         {
             return Generate(PswdDescriptor, input);
         }
-       
+
         private string GeneratePasswordInAccordanceWithDescriptor(string input, PasswordDescriptor descriptor)
         {
             byte[] crypt = _cryptographer.Encrypt(input);
@@ -75,7 +75,7 @@ namespace PasswordGenerator.Core
                     nextFiltred = FilterPassword(nextIteration, descriptor);
                 }
                 while (nextFiltred.Length == 0);
-                
+
                 password += nextFiltred;
             }
 
@@ -83,7 +83,7 @@ namespace PasswordGenerator.Core
                 password = password.Substring(0, descriptor.PasswordLength);
 
             password = AddDeficientAccordingToDescription(password, descriptor);
-            
+
             return password;
         }
 
@@ -98,24 +98,40 @@ namespace PasswordGenerator.Core
                             && (descriptor.SpecialSymbols || !Base91Coder.CharIsSpecial(c));
                 }).ToArray());
         }
-        
+
         private string AddDeficientAccordingToDescription(string password, PasswordDescriptor descriptor)
         {
             var lockedIndices = new List<int>();
-            
-            if (descriptor.LowerCase && !Regex.IsMatch(password, "[a-z]"))            
-                password = AddSymbol(password, Base91Coder.GetLowerCaseChars(), lockedIndices);                
-           
-            if (descriptor.UpperCase && !Regex.IsMatch(password, "[A-Z]"))            
-                password = AddSymbol(password, Base91Coder.GetUpperCaseChars(), lockedIndices);
-            
-            if (descriptor.Digits && !Regex.IsMatch(password, "[0-9]"))            
-                password = AddSymbol(password, Base91Coder.GetDigits(), lockedIndices);
-            
-            if (descriptor.SpecialSymbols && (!password.ToCharArray().Any(c => Base91Coder.CharIsSpecial(c))))            
-                password = AddSymbol(password, Base91Coder.GetSpecialChars(), lockedIndices);
+
+            while (!IsPasswordAccordingToDescription(password, descriptor))
+            {
+                if (descriptor.LowerCase && !Util.IsStringContainLowerCase(password))
+                    password = AddSymbol(password, Base91Coder.GetLowerCaseChars(), lockedIndices);
+
+                if (descriptor.UpperCase && !Util.IsStringContainUpperCase(password))
+                    password = AddSymbol(password, Base91Coder.GetUpperCaseChars(), lockedIndices);
+
+                if (descriptor.Digits && !Util.IsStringContainDigits(password))
+                    password = AddSymbol(password, Base91Coder.GetDigits(), lockedIndices);
+
+                if (descriptor.SpecialSymbols && !IsStringContainSpecialSymbols(password))
+                    password = AddSymbol(password, Base91Coder.GetSpecialChars(), lockedIndices);
+            }
 
             return password;
+        }
+
+        private bool IsPasswordAccordingToDescription(string password, PasswordDescriptor descriptor)
+        {
+            return (descriptor.LowerCase ? Util.IsStringContainLowerCase(password) : true) 
+                    && (descriptor.UpperCase ? Util.IsStringContainUpperCase(password) : true)
+                    && (descriptor.Digits ? Util.IsStringContainDigits(password) : true)
+                    && (descriptor.SpecialSymbols ? IsStringContainSpecialSymbols(password) : true);
+        }
+
+        private bool IsStringContainSpecialSymbols(string str)
+        {
+            return str.ToCharArray().Any(c => Base91Coder.CharIsSpecial(c));
         }
 
         private string AddSymbol(string str, char[] charSet, List<int> lockedIndices)
@@ -124,9 +140,17 @@ namespace PasswordGenerator.Core
 
             int indexInStr = aggregateHashValue % str.Length;
 
-            while (lockedIndices.Any(i => i == indexInStr))
+            if (lockedIndices.Contains(indexInStr))
             {
-                indexInStr = (str[indexInStr] + aggregateHashValue) % str.Length;
+                int minRelativelyPrime = Util.GetMinRelativelyPrimeNumber(str.Length);
+               
+                do
+                {
+                    indexInStr += minRelativelyPrime;
+                    if (indexInStr >= str.Length)
+                        indexInStr -= str.Length;
+                }
+                while (lockedIndices.Contains(indexInStr));
             }
             
             lockedIndices.Add(indexInStr);

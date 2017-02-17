@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace PasswordGenerator.Core
+{
+    public static class Util
+    {
+        public static int GetMinRelativelyPrimeNumber(int number)
+        {
+            int res = -1;
+
+            for (int i = 2; i<number; i++)
+            {
+                int[] multipliers = GetDividers(i);
+
+                if (multipliers.All(n => number % n != 0))
+                {
+                    res = i;
+                    break;
+                }                    
+            }
+            return res;
+        }
+
+        private static int[] GetDividers(int n)
+        {
+            var dividers = new List<int>();
+
+            for (int i = 2; i<=n/2; i++)
+            {
+                if (n % i == 0)
+                {
+                    dividers.Add(i); 
+                }
+            }
+            if (n>1) dividers.Add(n);
+
+            return dividers.ToArray();
+        }
+        
+        public static bool IsStringContainLowerCase(string str)
+        {
+            return Regex.IsMatch(str, "[a-z]");
+        }
+
+        public static bool IsStringContainUpperCase(string str)
+        {
+            return Regex.IsMatch(str, "[A-Z]");
+        }
+
+        public static bool IsStringContainDigits(string str)
+        {
+            return Regex.IsMatch(str, "[0-9]");
+        }       
+    }
+}
