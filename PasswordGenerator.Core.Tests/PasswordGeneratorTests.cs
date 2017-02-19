@@ -8,6 +8,32 @@ namespace PasswordGenerator.Core.Tests
     public class PasswordGeneratorTests
     {
         [Test]
+        public void PasswordMinLenght_ForMinLengthBelow1_SetMinLength1()
+        {
+            //arrange
+            var generator = GetGenerator();
+
+            //act
+            generator.PasswordMinLenght = -5;
+
+            //assert
+            Assert.AreEqual(1, generator.PasswordMinLenght);
+        }
+
+        [Test]
+        public void PasswordMaxLenght_ForMaxLengthAbove40_SetMaxLength40()
+        {
+            //arrange
+            var generator = GetGenerator();
+
+            //act
+            generator.PasswordMaxLenght = 90;
+
+            //assert
+            Assert.AreEqual(40, generator.PasswordMaxLenght);
+        }
+
+        [Test]
         public void PswdDescriptor_ForPasswordLengthBelow6_SetPasswordLength6()
         {
             //arrange
@@ -15,14 +41,14 @@ namespace PasswordGenerator.Core.Tests
 
             var shortPasswordDescriptor = new PasswordGenerator.PasswordDescriptor()
             {
-                PasswordLength = 5,
+                PasswordLength = -10,
             };            
 
             //act
             generator.PswdDescriptor = shortPasswordDescriptor;
 
             //assert
-            Assert.AreEqual(generator.PswdDescriptor.PasswordLength, 6);
+            Assert.AreEqual(generator.PswdDescriptor.PasswordLength, 1);
         }
 
         [Test]

@@ -8,9 +8,46 @@ namespace PasswordGenerator.Core
 {
     public class PasswordGenerator
     {
+        const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
+        const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
+
         private readonly ICryptographer _cryptographer;
         private readonly string _key;
         private readonly Base91Coder coder = new Base91Coder();
+
+        private int _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
+        public int PasswordMinLenght
+        {
+            get
+            {
+                return _passwordMinLenght;
+            }
+
+            set
+            {
+                if (value < DEFAULT_PASSWORD_MIN_LENGTH)
+                    _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
+                else
+                    _passwordMinLenght = value;
+            }
+        }
+
+        private int _passwordMaxLenght = DEFAULT_PASSWORD_MAX_LENGTH;
+        public int PasswordMaxLenght
+        {
+            get
+            {
+                return _passwordMaxLenght;
+            }
+
+            set
+            {
+                if (value > DEFAULT_PASSWORD_MAX_LENGTH)
+                    _passwordMaxLenght = DEFAULT_PASSWORD_MAX_LENGTH;
+                else
+                    _passwordMaxLenght = value;
+            }
+        }
 
         private PasswordDescriptor _pswdDescriptor;
         public PasswordDescriptor PswdDescriptor
@@ -19,13 +56,10 @@ namespace PasswordGenerator.Core
 
             set
             {
-                const int PASSWORD_MIN_LENGTH = 6;
-                const int PASSWORD_MAX_LENGTH = 40;
-
-                if (value.PasswordLength < PASSWORD_MIN_LENGTH)
-                    value.PasswordLength = PASSWORD_MIN_LENGTH;
-                else if (value.PasswordLength > PASSWORD_MAX_LENGTH)
-                    value.PasswordLength = PASSWORD_MAX_LENGTH;
+                if (value.PasswordLength < _passwordMinLenght)
+                    value.PasswordLength = _passwordMinLenght;
+                else if (value.PasswordLength > _passwordMaxLenght)
+                    value.PasswordLength = _passwordMaxLenght;
 
                 _pswdDescriptor = value;
             }
@@ -82,7 +116,7 @@ namespace PasswordGenerator.Core
             if (password.Length > descriptor.PasswordLength)
                 password = password.Substring(0, descriptor.PasswordLength);
 
-            password = AddDeficientAccordingToDescription(password, descriptor);
+            password = AddDeficientAccordingWithDescriptor(password, descriptor);
 
             return password;
         }
@@ -99,7 +133,7 @@ namespace PasswordGenerator.Core
                 }).ToArray());
         }
 
-        private string AddDeficientAccordingToDescription(string password, PasswordDescriptor descriptor)
+        private string AddDeficientAccordingWithDescriptor(string password, PasswordDescriptor descriptor)
         {
             var lockedIndices = new List<int>();
 
