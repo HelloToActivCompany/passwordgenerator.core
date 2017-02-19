@@ -49,10 +49,10 @@ namespace PasswordGenerator.Core
             }
         }
 
-        private PasswordDescriptor _pswdDescriptor;
+        private PasswordDescriptor _passwordDescriptor;
         public PasswordDescriptor PasswordDescriptor
         {
-            get { return _pswdDescriptor; }
+            get { return _passwordDescriptor; }
 
             set
             {
@@ -61,7 +61,7 @@ namespace PasswordGenerator.Core
                 else if (value.PasswordLength > _passwordMaxLenght)
                     value.PasswordLength = _passwordMaxLenght;
 
-                _pswdDescriptor = value;
+                _passwordDescriptor = value;
             }
         }
 
