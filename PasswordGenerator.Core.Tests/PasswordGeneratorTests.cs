@@ -39,16 +39,16 @@ namespace PasswordGenerator.Core.Tests
             //arrange
             var generator = GetGenerator();
 
-            var shortPasswordDescriptor = new PasswordGenerator.PasswordDescriptor()
+            var shortPasswordDescriptor = new PasswordDescriptor()
             {
                 PasswordLength = -10,
             };            
 
             //act
-            generator.PswdDescriptor = shortPasswordDescriptor;
+            generator.PasswordDescriptor = shortPasswordDescriptor;
 
             //assert
-            Assert.AreEqual(generator.PswdDescriptor.PasswordLength, 1);
+            Assert.AreEqual(generator.PasswordDescriptor.PasswordLength, 1);
         }
 
         [Test]
@@ -57,16 +57,16 @@ namespace PasswordGenerator.Core.Tests
             //arrange
             var generator = GetGenerator();
 
-            var longPasswordDescriptor = new PasswordGenerator.PasswordDescriptor()
+            var longPasswordDescriptor = new PasswordDescriptor()
             {
                 PasswordLength = 41,
             };            
 
             //act
-            generator.PswdDescriptor = longPasswordDescriptor;
+            generator.PasswordDescriptor = longPasswordDescriptor;
 
             //assert
-            Assert.AreEqual(generator.PswdDescriptor.PasswordLength, 40);
+            Assert.AreEqual(generator.PasswordDescriptor.PasswordLength, 40);
         }
 
 
@@ -74,8 +74,8 @@ namespace PasswordGenerator.Core.Tests
         public void Constructor_WithoutPasswordDescriptorParam_CreatePasswordDescriptorByDefault()
         {
             //arrange
-            PasswordGenerator generator = new PasswordGenerator(new HashCryptographer(), "key");
-            var defaultDescriptor = new PasswordGenerator.PasswordDescriptor
+            var generator = new PasswordGenerator(new HashCryptographer(), "key");
+            var defaultDescriptor = new PasswordDescriptor
             {
                 LowerCase = true,
                 UpperCase = true,
@@ -85,7 +85,7 @@ namespace PasswordGenerator.Core.Tests
             };
 
             //assert
-            Assert.AreEqual(defaultDescriptor, generator.PswdDescriptor);
+            Assert.AreEqual(defaultDescriptor, generator.PasswordDescriptor);
         }
 
         [TestCase("")]
@@ -119,7 +119,7 @@ namespace PasswordGenerator.Core.Tests
                                                                                 bool digits, bool specialSymbols, int passwordLength)
         {
             //arrange
-            var descriptor = new PasswordGenerator.PasswordDescriptor
+            var descriptor = new PasswordDescriptor
             {
                 LowerCase = lowerCase,
                 UpperCase = upperCase,
@@ -137,12 +137,12 @@ namespace PasswordGenerator.Core.Tests
             Assert.IsTrue(IsPasswordMatchesDescription(password, descriptor));
         }
 
-        private bool IsPasswordMatchesDescription(string password, PasswordGenerator.PasswordDescriptor descriptor)
+        private bool IsPasswordMatchesDescription(string password, PasswordDescriptor descriptor)
         {
             if (password.Length != descriptor.PasswordLength)
                 return false;
 
-            PasswordGenerator.PasswordDescriptor currentDescriptor = new PasswordGenerator.PasswordDescriptor
+            var currentDescriptor = new PasswordDescriptor
             {
                 LowerCase = false,
                 UpperCase = false,

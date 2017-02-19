@@ -50,7 +50,7 @@ namespace PasswordGenerator.Core
         }
 
         private PasswordDescriptor _pswdDescriptor;
-        public PasswordDescriptor PswdDescriptor
+        public PasswordDescriptor PasswordDescriptor
         {
             get { return _pswdDescriptor; }
 
@@ -70,7 +70,7 @@ namespace PasswordGenerator.Core
             _cryptographer = cryptographer;
             _key = key;
 
-            PswdDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
+            PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -87,7 +87,7 @@ namespace PasswordGenerator.Core
 
         public string Generate(string input)
         {
-            return Generate(PswdDescriptor, input);
+            return Generate(PasswordDescriptor, input);
         }
 
         private string GeneratePasswordInAccordanceWithDescriptor(string input, PasswordDescriptor descriptor)
@@ -212,15 +212,6 @@ namespace PasswordGenerator.Core
             return charSet[index];
         }
 
-        public struct PasswordDescriptor
-        {
-            public bool LowerCase;
-            public bool UpperCase;
-            public bool Digits;
-            public bool SpecialSymbols;
-            public int PasswordLength;
-        }
-
         private PasswordDescriptor GetDefaultPasswordDescriptor()
         {
             return new PasswordDescriptor
@@ -232,5 +223,14 @@ namespace PasswordGenerator.Core
                 PasswordLength = 18
             };
         }
+    }
+
+    public struct PasswordDescriptor
+    {
+        public bool LowerCase;
+        public bool UpperCase;
+        public bool Digits;
+        public bool SpecialSymbols;
+        public int PasswordLength;
     }
 }
