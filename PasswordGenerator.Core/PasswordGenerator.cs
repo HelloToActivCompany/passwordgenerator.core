@@ -55,13 +55,13 @@ namespace PasswordGenerator.Core
             get { return _passwordDescriptor; }
 
             set
-            {
-                if (value.PasswordLength < _passwordMinLenght)
-                    value.PasswordLength = _passwordMinLenght;
-                else if (value.PasswordLength > _passwordMaxLenght)
-                    value.PasswordLength = _passwordMaxLenght;
-
+            {             
                 _passwordDescriptor = value;
+
+                if (_passwordDescriptor.PasswordLength < _passwordMinLenght)
+                    _passwordDescriptor.PasswordLength = _passwordMinLenght;
+                else if (_passwordDescriptor.PasswordLength > _passwordMaxLenght)
+                    _passwordDescriptor.PasswordLength = _passwordMaxLenght;
             }
         }
         
