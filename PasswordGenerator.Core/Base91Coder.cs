@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator.Core
 {
-    public class Base91Coder
+    public class Base91Coder : IStringBytesConvertable
     {
         private static char[] EncodeTable = new char[]
         {
@@ -18,6 +18,26 @@ namespace PasswordGenerator.Core
             '%', '&', '(', ')', '*', '+', ',', '.', '/', ':', ';', '<', '=',
             '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~', '"'
         };
+
+        private static Dictionary<byte, int> DecodeTable;
+
+        static Base91Coder()
+        {
+            InitDecodeTable();
+        }
+
+        private static void InitDecodeTable()
+        {
+            DecodeTable = new Dictionary<byte, int>();
+            for (int i = 0; i < 255; i++)
+            {
+                DecodeTable[(byte)i] = -1;
+            }
+            for (int i = 0; i < EncodeTable.Length; i++)
+            {
+                DecodeTable[(byte)EncodeTable[i]] = i;
+            }
+        }
 
         public static char[] GetLowerCaseChars()
         {
@@ -44,7 +64,7 @@ namespace PasswordGenerator.Core
             return GetSpecialChars().Any(item => item == c);
         }
 
-        public string ToBase91String(byte[] data)
+        public string ConvertBytesToString(byte[] data)
         {
             string base91String = "";
             int b = 0;
@@ -79,6 +99,41 @@ namespace PasswordGenerator.Core
                     base91String += (char)EncodeTable[b / 91];
             }
             return base91String;
+        }
+        public byte[] ConvertStringToBytes(string base91)
+        {
+            List<byte> output = new List<byte>();
+            int c = 0;
+            int v = -1;
+            int b = 0;
+            int n = 0;
+            for (int i = 0; i < base91.Length; i++)
+            {
+                c = DecodeTable[(byte)base91[i]];
+                if (c == -1) continue;
+                if (v < 0)
+                {
+                    v = c;
+                }
+                else
+                {
+                    v += c * 91;
+                    b |= v << n;
+                    n += (v & 8191) > 88 ? 13 : 14;
+                    do
+                    {
+                        output.Add((byte)((char)(b & 255)));
+                        b >>= 8;
+                        n -= 8;
+                    } while (n > 7);
+                    v = -1;
+                }
+            }
+            if (v + 1 != 0)
+            {
+                output.Add((byte)((char)((b | v << n) & 255)));
+            }
+            return output.ToArray();
         }
     }
 }
