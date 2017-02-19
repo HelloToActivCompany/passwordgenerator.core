@@ -10,10 +10,10 @@ namespace PasswordGenerator.Core
     {
         const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
+        private readonly IHashCryptographer _cryptographer;
 
-        private readonly ICryptographer _cryptographer;
-        private readonly string _key;
-        private readonly Base91Coder coder = new Base91Coder();
+
+        private readonly string _key;        
 
         private int _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
         public int PasswordMinLenght
@@ -64,13 +64,17 @@ namespace PasswordGenerator.Core
                 _passwordDescriptor = value;
             }
         }
+        
+        public IStringBytesConvertable Coder { get; set; }     
 
-        public PasswordGenerator(ICryptographer cryptographer, string key, PasswordDescriptor? descriptor = null)
+        public PasswordGenerator(IHashCryptographer cryptographer, string key, PasswordDescriptor? descriptor = null, IStringBytesConvertable coder = null)
         {
             _cryptographer = cryptographer;
             _key = key;
 
             PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
+
+            Coder = coder ?? new Base91Coder();
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -91,10 +95,8 @@ namespace PasswordGenerator.Core
         }
 
         private string GeneratePasswordInAccordanceWithDescriptor(string input, PasswordDescriptor descriptor)
-        {
-            byte[] crypt = _cryptographer.Encrypt(input);
-
-            string password = coder.ToBase91String(crypt);
+        {     
+            string password = Coder.ConvertBytesToString(_cryptographer.Encrypt(Coder.ConvertStringToBytes(input)));
 
             password = FilterPassword(password, descriptor);
 
@@ -105,7 +107,7 @@ namespace PasswordGenerator.Core
 
                 do
                 {
-                    nextIteration = coder.ToBase91String(_cryptographer.Encrypt(nextIteration));
+                    nextIteration = Coder.ConvertBytesToString(_cryptographer.Encrypt(Coder.ConvertStringToBytes(nextIteration)));
                     nextFiltred = FilterPassword(nextIteration, descriptor);
                 }
                 while (nextFiltred.Length == 0);
@@ -196,7 +198,7 @@ namespace PasswordGenerator.Core
 
         private int GetAggregateHashValue(string str)
         {
-            var hash = _cryptographer.Encrypt(str);
+            var hash = _cryptographer.Encrypt(Coder.ConvertStringToBytes(str));
 
             int aggregateHash = hash.Aggregate(0, (s, i) => s + i);
 

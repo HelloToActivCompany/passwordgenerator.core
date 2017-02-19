@@ -3,20 +3,18 @@ using PCLCrypto;
 
 namespace PasswordGenerator.Core
 {
-    public class HashCryptographer: ICryptographer
+    public class PCLCryptographer: IHashCryptographer
     {
         private readonly IHashAlgorithmProvider _hasher;
         
-        public HashCryptographer(HashAlgorithm algorithm = HashAlgorithm.Md5)
+        public PCLCryptographer(HashAlgorithm algorithm = HashAlgorithm.Md5)
         {
             _hasher = WinRTCrypto.HashAlgorithmProvider.OpenAlgorithm(algorithm);
         }
 
-        public byte[] Encrypt(string input)
+        public byte[] Encrypt(byte[] data)
         {
-            var data = System.Text.Encoding.UTF8.GetBytes(input);
-            var hash = _hasher.HashData(data);            
-            return hash;
+            return _hasher.HashData(data); 
         }
     }
 }

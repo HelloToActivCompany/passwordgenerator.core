@@ -34,7 +34,7 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void PswdDescriptor_ForPasswordLengthBelow6_SetPasswordLength6()
+        public void PasswordDescriptor_ForPasswordLengthBelow6_SetPasswordLength6()
         {
             //arrange
             var generator = GetGenerator();
@@ -52,7 +52,7 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void PswdDescriptor_ForPasswordLengthAbove40_SetPasswordLength40()
+        public void PasswordDescriptor_ForPasswordLengthAbove40_SetPasswordLength40()
         {
             //arrange
             var generator = GetGenerator();
@@ -74,7 +74,7 @@ namespace PasswordGenerator.Core.Tests
         public void Constructor_WithoutPasswordDescriptorParam_CreatePasswordDescriptorByDefault()
         {
             //arrange
-            var generator = new PasswordGenerator(new HashCryptographer(), "key");
+            PasswordGenerator generator = new PasswordGenerator(new PCLCryptographer(), "key");
             var defaultDescriptor = new PasswordDescriptor
             {
                 LowerCase = true,
@@ -86,6 +86,16 @@ namespace PasswordGenerator.Core.Tests
 
             //assert
             Assert.AreEqual(defaultDescriptor, generator.PasswordDescriptor);
+        }
+
+        [Test]
+        public void Constructor_WithoutCoderParam_CreateCoderByDefault()
+        {
+            //arrange
+            PasswordGenerator generator = new PasswordGenerator(new PCLCryptographer(), "key");
+
+            //assert
+            Assert.IsTrue(generator.Coder is Base91Coder);
         }
 
         [TestCase("")]
@@ -168,7 +178,7 @@ namespace PasswordGenerator.Core.Tests
 
         private PasswordGenerator GetGenerator()
         {
-            return new PasswordGenerator(new HashCryptographer(PCLCrypto.HashAlgorithm.Md5), "key");
+            return new PasswordGenerator(new PCLCryptographer(PCLCrypto.HashAlgorithm.Md5), "key");
         }
     }
 }

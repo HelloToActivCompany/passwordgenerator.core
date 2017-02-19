@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using Moq;
 using PCLCrypto;
+using System.Text;
+using System.Linq;
 
 namespace PasswordGenerator.Core.Tests
 {
@@ -9,16 +11,17 @@ namespace PasswordGenerator.Core.Tests
     public class HashCryptographerTests
     {
         [Test]
-        public void Encrypt_ForEqualStrings_GenerateEqualCrypts()
+        public void Encrypt_ForEqualData_GenerateEqualCrypts()
         {
             //arrange
             var cryptographer = GetCryptographer();
+            var data = Encoding.Unicode.GetBytes("forCryptographing");
 
             //act
-            var crypt1 = cryptographer.Encrypt("SomeString");
-            var crypt2 = cryptographer.Encrypt("SomeString");
+            var crypt1 = cryptographer.Encrypt(data);
+            var crypt2 = cryptographer.Encrypt(data);
 
-            //assert
+            //assert            
             Assert.AreEqual(crypt1, crypt2);
         }
 
@@ -27,19 +30,22 @@ namespace PasswordGenerator.Core.Tests
         {
             //arrange
             var cryptographerByDefault = GetCryptographer();
-            var md5Cryptographer = new HashCryptographer(HashAlgorithm.Md5);
+            var md5Cryptographer = new PCLCryptographer(HashAlgorithm.Md5);
+
+            var data = Encoding.Unicode.GetBytes("forCryptographing");
+
 
             //act
-            var cryptByDefault = cryptographerByDefault.Encrypt("test");
-            var md5Crypt = md5Cryptographer.Encrypt("test");
+            var cryptByDefault = cryptographerByDefault.Encrypt(data);
+            var md5Crypt = md5Cryptographer.Encrypt(data);
 
             //assert
             Assert.AreEqual(cryptByDefault, md5Crypt);
         }
 
-        private ICryptographer GetCryptographer()
+        private IHashCryptographer GetCryptographer()
         {
-            return new HashCryptographer();
+            return new PCLCryptographer();
         }
     }
 }
