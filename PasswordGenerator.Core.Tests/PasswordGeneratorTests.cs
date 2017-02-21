@@ -62,7 +62,7 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void PasswordDescriptor_ForPasswordLengthBelow6_SetPasswordLength6()
+        public void PasswordDescriptor_ForPasswordLengthBelow1_SetPasswordLength1()
         {
             //arrange
             var generator = GetGenerator();
