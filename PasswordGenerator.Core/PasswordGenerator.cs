@@ -28,7 +28,11 @@ namespace PasswordGenerator.Core
                 if (value < DEFAULT_PASSWORD_MIN_LENGTH)
                     _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
                 else
+                {
                     _passwordMinLenght = value;
+                    if (_passwordMinLenght > _passwordMaxLenght)
+                        _passwordMaxLenght = _passwordMinLenght;
+                }
             }
         }
 
@@ -45,7 +49,11 @@ namespace PasswordGenerator.Core
                 if (value > DEFAULT_PASSWORD_MAX_LENGTH)
                     _passwordMaxLenght = DEFAULT_PASSWORD_MAX_LENGTH;
                 else
+                {
                     _passwordMaxLenght = value;
+                    if (_passwordMaxLenght < _passwordMinLenght)
+                        _passwordMinLenght = _passwordMaxLenght;
+                }
             }
         }
 
