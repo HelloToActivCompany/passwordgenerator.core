@@ -14,11 +14,11 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            generator.PasswordMinLenght = 10;
-            generator.PasswordMaxLenght = 5;
+            generator.PasswordMinLength = 10;
+            generator.PasswordMaxLength = 5;
 
             //assert
-            Assert.AreEqual(5, generator.PasswordMinLenght);
+            Assert.AreEqual(5, generator.PasswordMinLength);
         }
 
         [Test]
@@ -28,11 +28,11 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            generator.PasswordMaxLenght = 10;
-            generator.PasswordMinLenght = 15;
+            generator.PasswordMaxLength = 10;
+            generator.PasswordMinLength = 15;
 
             //assert
-            Assert.AreEqual(15, generator.PasswordMaxLenght);
+            Assert.AreEqual(15, generator.PasswordMaxLength);
         }
 
         [Test]
@@ -42,10 +42,10 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            generator.PasswordMinLenght = -5;
+            generator.PasswordMinLength = -5;
 
             //assert
-            Assert.AreEqual(1, generator.PasswordMinLenght);
+            Assert.AreEqual(1, generator.PasswordMinLength);
         }
 
         [Test]
@@ -55,10 +55,10 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            generator.PasswordMaxLenght = 90;
+            generator.PasswordMaxLength = 90;
 
             //assert
-            Assert.AreEqual(40, generator.PasswordMaxLenght);
+            Assert.AreEqual(40, generator.PasswordMaxLength);
         }
 
         [Test]

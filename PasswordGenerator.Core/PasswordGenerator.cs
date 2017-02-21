@@ -10,49 +10,48 @@ namespace PasswordGenerator.Core
     {
         const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
+
         private readonly IHashCryptographer _cryptographer;
-
-
         private readonly string _key;        
 
-        private int _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
-        public int PasswordMinLenght
+        private int _passwordMinLength = DEFAULT_PASSWORD_MIN_LENGTH;
+        public int PasswordMinLength
         {
             get
             {
-                return _passwordMinLenght;
+                return _passwordMinLength;
             }
 
             set
             {
                 if (value < DEFAULT_PASSWORD_MIN_LENGTH)
-                    _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
+                    _passwordMinLength = DEFAULT_PASSWORD_MIN_LENGTH;
                 else
                 {
-                    _passwordMinLenght = value;
-                    if (_passwordMinLenght > _passwordMaxLenght)
-                        _passwordMaxLenght = _passwordMinLenght;
+                    _passwordMinLength = value;
+                    if (_passwordMinLength > _passwordMaxLength)
+                        _passwordMaxLength = _passwordMinLength;
                 }
             }
         }
 
-        private int _passwordMaxLenght = DEFAULT_PASSWORD_MAX_LENGTH;
-        public int PasswordMaxLenght
+        private int _passwordMaxLength = DEFAULT_PASSWORD_MAX_LENGTH;
+        public int PasswordMaxLength
         {
             get
             {
-                return _passwordMaxLenght;
+                return _passwordMaxLength;
             }
 
             set
             {
                 if (value > DEFAULT_PASSWORD_MAX_LENGTH)
-                    _passwordMaxLenght = DEFAULT_PASSWORD_MAX_LENGTH;
+                    _passwordMaxLength = DEFAULT_PASSWORD_MAX_LENGTH;
                 else
                 {
-                    _passwordMaxLenght = value;
-                    if (_passwordMaxLenght < _passwordMinLenght)
-                        _passwordMinLenght = _passwordMaxLenght;
+                    _passwordMaxLength = value;
+                    if (_passwordMaxLength < _passwordMinLength)
+                        _passwordMinLength = _passwordMaxLength;
                 }
             }
         }
@@ -66,10 +65,10 @@ namespace PasswordGenerator.Core
             {             
                 _passwordDescriptor = value;
 
-                if (_passwordDescriptor.PasswordLength < _passwordMinLenght)
-                    _passwordDescriptor.PasswordLength = _passwordMinLenght;
-                else if (_passwordDescriptor.PasswordLength > _passwordMaxLenght)
-                    _passwordDescriptor.PasswordLength = _passwordMaxLenght;
+                if (_passwordDescriptor.PasswordLength < _passwordMinLength)
+                    _passwordDescriptor.PasswordLength = _passwordMinLength;
+                else if (_passwordDescriptor.PasswordLength > _passwordMaxLength)
+                    _passwordDescriptor.PasswordLength = _passwordMaxLength;
             }
         }
         
