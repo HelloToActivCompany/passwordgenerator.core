@@ -60,11 +60,17 @@ namespace PasswordGenerator.Core
         private PasswordDescriptor _passwordDescriptor;
         public PasswordDescriptor PasswordDescriptor
         {
-            get { return _passwordDescriptor; }
+            get
+            {
+                return _passwordDescriptor;
+            }
 
             set
             {             
                 _passwordDescriptor = value;
+
+                if (_passwordDescriptor == null)
+                    _passwordDescriptor = GetDefaultPasswordDescriptor();
 
                 if (_passwordDescriptor.PasswordLength < _passwordMinLength)
                     _passwordDescriptor.PasswordLength = _passwordMinLength;

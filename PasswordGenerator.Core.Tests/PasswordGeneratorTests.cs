@@ -10,6 +10,28 @@ namespace PasswordGenerator.Core.Tests
     public class PasswordGeneratorTests
     {
         [Test]
+        public void PasswordDescriptor_ForNullValue_ReturnDefault()
+        {
+            //arrange
+            var generator = GetGenerator();
+            var defaultDescriptor = new PasswordDescriptor
+            {
+                LowerCase = true,
+                UpperCase = true,
+                Digits = true,
+                SpecialSymbols = true,
+                PasswordLength = 18,
+                Alphabet = GetDefaultAlphabet()
+            };
+
+            //act
+            generator.PasswordDescriptor = null;
+
+            //assert
+            Assert.That(PasswordDescriptorEquals(defaultDescriptor, generator.PasswordDescriptor));
+        }
+
+        [Test]
         public void PasswordMinLength_ForMaxLessThenMinLength_SetMinEqualMaxLength()
         {
             //arrange
