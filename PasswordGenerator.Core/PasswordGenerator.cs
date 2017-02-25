@@ -8,8 +8,8 @@ namespace PasswordGenerator.Core
 {
     public class PasswordGenerator
     {
-        const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
-        const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
+        private const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
+        private const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
 
         private readonly string _key;
 
@@ -261,17 +261,24 @@ namespace PasswordGenerator.Core
 
     public class PasswordDescriptor
     {
-        public bool LowerCase;     
-        public bool UpperCase;
-        public bool Digits;
-        public bool SpecialSymbols;
-        public Alphabet Alphabet { get; set; }
-
-        public int PasswordLength;
-
-        public PasswordDescriptor()
+        private Alphabet _alphabet;
+        public Alphabet Alphabet
         {
-            Alphabet = new Alphabet();
+            get
+            {
+                if (_alphabet == null)                
+                    _alphabet = new Alphabet();
+                return _alphabet;
+            }
+            set
+            {
+                _alphabet = value;
+            }
         }
+        public bool LowerCase { get; set; }      
+        public bool UpperCase { get; set; }
+        public bool Digits { get; set; }
+        public bool SpecialSymbols { get; set; }
+        public int PasswordLength { get; set; }
     }
 }
