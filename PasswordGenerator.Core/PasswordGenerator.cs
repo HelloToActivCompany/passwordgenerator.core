@@ -177,7 +177,7 @@ namespace PasswordGenerator.Core
                     && (descriptor.SpecialSymbols ? AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet) : true);
         }
 
-        private string AddSymbol(string str, char[] charSet, List<int> lockedIndices)
+        private string AddSymbol(string str, IReadOnlyList<char> charSet, List<int> lockedIndices)
         {
             int aggregateHashValue = GetAggregateHashValue(str);
 
@@ -212,11 +212,11 @@ namespace PasswordGenerator.Core
             return aggregateHash;
         }
 
-        private char GetAddingChar(string str, char[] charSet)
+        private char GetAddingChar(string str, IReadOnlyList<char> charSet)
         {
             int aggregateHashValue = GetAggregateHashValue(str);
 
-            int index = aggregateHashValue % charSet.Length;
+            int index = aggregateHashValue % charSet.Count;
 
             return charSet[index];
         }
@@ -235,7 +235,6 @@ namespace PasswordGenerator.Core
                 Digits = true,
                 SpecialSymbols = true,
                 PasswordLength = 18,
-                Alphabet = GetDefaultAlphabet()
             };
         }
 
@@ -247,16 +246,16 @@ namespace PasswordGenerator.Core
             return coder;
         }
 
-        private Alphabet GetDefaultAlphabet()
-        {
-            return new Alphabet()
-            {
-                LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray(),
-                UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(),
-                Digits = "0123456789".ToCharArray(),
-                SpecialSymbols = "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray()
-            };             
-        }
+        //private Alphabet GetDefaultAlphabet()
+        //{
+        //    return new Alphabet()
+        //    {
+        //        LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray(),
+        //        UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(),
+        //        Digits = "0123456789".ToCharArray(),
+        //        SpecialSymbols = "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray()
+        //    };             
+        //}
     }
 
     public class PasswordDescriptor
