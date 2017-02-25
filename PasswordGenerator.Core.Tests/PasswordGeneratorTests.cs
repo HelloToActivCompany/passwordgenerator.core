@@ -163,17 +163,6 @@ namespace PasswordGenerator.Core.Tests
             return true;
         }
 
-        //private Alphabet GetDefaultAlphabet()
-        //{
-        //    return new Alphabet()
-        //    {
-        //        LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray(),
-        //        UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(),
-        //        Digits = "0123456789".ToCharArray(),
-        //        SpecialSymbols = "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray()
-        //    };
-        //}
-
         [TestCase("")]
         [TestCase(null)]
         [TestCase("     ")]
@@ -212,8 +201,7 @@ namespace PasswordGenerator.Core.Tests
                 Digits = digits,
                 SpecialSymbols = specialSymbols,
                 PasswordLength = passwordLength
-            };
-            //ConfigurateDefaultDescriptorAlphabet(descriptor);
+            };            
 
             var generator = GetGenerator();
 
@@ -223,21 +211,6 @@ namespace PasswordGenerator.Core.Tests
             //assert
             Assert.IsTrue(IsPasswordSatisfiesDescriptor(password, descriptor));
         }
-
-        //private void ConfigurateDefaultDescriptorAlphabet(PasswordDescriptor descriptor)
-        //{
-        //    var alphabet = new List<char>();
-
-        //    if (descriptor.LowerCase)
-        //        descriptor.Alphabet.LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
-        //    if (descriptor.UpperCase)
-        //        descriptor.Alphabet.UpperCase= "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-        //    if (descriptor.Digits)
-        //        descriptor.Alphabet.Digits= "0123456789".ToCharArray();
-        //    if (descriptor.SpecialSymbols)
-        //        descriptor.Alphabet.SpecialSymbols= "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray();            
-        //}
-
 
         private bool IsPasswordSatisfiesDescriptor(string password, PasswordDescriptor descriptor)
         {

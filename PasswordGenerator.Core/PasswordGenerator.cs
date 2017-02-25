@@ -244,18 +244,7 @@ namespace PasswordGenerator.Core
             ConfigurateCoderByDescriptor(coder, PasswordDescriptor);
 
             return coder;
-        }
-
-        //private Alphabet GetDefaultAlphabet()
-        //{
-        //    return new Alphabet()
-        //    {
-        //        LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray(),
-        //        UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(),
-        //        Digits = "0123456789".ToCharArray(),
-        //        SpecialSymbols = "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray()
-        //    };             
-        //}
+        }        
     }
 
     public class PasswordDescriptor
