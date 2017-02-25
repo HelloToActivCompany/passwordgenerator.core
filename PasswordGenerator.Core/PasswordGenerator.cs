@@ -12,7 +12,6 @@ namespace PasswordGenerator.Core
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
 
         private readonly string _key;
-
         private readonly IHashCryptographer _cryptographer;
         private BytesToStringCoderBase _coder;
 
@@ -80,16 +79,15 @@ namespace PasswordGenerator.Core
             }
         }
 
-        public PasswordGenerator(IHashCryptographer cryptographer, string key, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
+        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
         {
-            _cryptographer = cryptographer;
+            PasswordDescriptor = descriptor; 
+                 
             _key = key;
 
             _cryptographer = cryptographer ?? GetDefaultCryptographer();
 
-            PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
-
-           _coder = coder ?? GetDefaultCoder();            
+            _coder = coder ?? GetDefaultCoder();      
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
