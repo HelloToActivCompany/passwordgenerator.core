@@ -12,24 +12,8 @@ namespace PasswordGenerator.Core
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
 
         private readonly string _key;
-
         private readonly IHashCryptographer _cryptographer;
         private BytesToStringUniversalCoderBase _coder;
-        private PasswordDescriptor _passwordDescriptor;
-        public PasswordDescriptor PasswordDescriptor
-        {
-            get { return _passwordDescriptor; }
-
-            set
-            {
-                _passwordDescriptor = value;
-
-                if (_passwordDescriptor.PasswordLength < _passwordMinLength)
-                    _passwordDescriptor.PasswordLength = _passwordMinLength;
-                else if (_passwordDescriptor.PasswordLength > _passwordMaxLength)
-                    _passwordDescriptor.PasswordLength = _passwordMaxLength;
-            }
-        }
 
         private int _passwordMinLength = DEFAULT_PASSWORD_MIN_LENGTH;
         public int PasswordMinLength
@@ -74,14 +58,36 @@ namespace PasswordGenerator.Core
         }
 
         public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, BytesToStringUniversalCoderBase coder = null)
-        {           
+        public PasswordDescriptor PasswordDescriptor
+        {
+            get
+            {
+                return _passwordDescriptor;
+            }
+
+            set
+            {             
+                _passwordDescriptor = value;
+
+                if (_passwordDescriptor == null)
+                    _passwordDescriptor = GetDefaultPasswordDescriptor();
+
+                if (_passwordDescriptor.PasswordLength < _passwordMinLength)
+                    _passwordDescriptor.PasswordLength = _passwordMinLength;
+                else if (_passwordDescriptor.PasswordLength > _passwordMaxLength)
+                    _passwordDescriptor.PasswordLength = _passwordMaxLength;
+            }
+        }
+
+        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
+        {
+            PasswordDescriptor = descriptor; 
+                 
             _key = key;
 
             _cryptographer = cryptographer ?? GetDefaultCryptographer();
 
-            PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
-
-           _coder = coder ?? GetDefaultCoder();            
+            _coder = coder ?? GetDefaultCoder();      
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
