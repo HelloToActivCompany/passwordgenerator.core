@@ -10,10 +10,26 @@ namespace PasswordGenerator.Core
     {
         const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
-        private readonly IHashCryptographer _cryptographer;
+
         private readonly string _key;
 
+        private readonly IHashCryptographer _cryptographer;
         private BytesToStringCoderBase _coder;
+        private PasswordDescriptor _passwordDescriptor;
+        public PasswordDescriptor PasswordDescriptor
+        {
+            get { return _passwordDescriptor; }
+
+            set
+            {
+                _passwordDescriptor = value;
+
+                if (_passwordDescriptor.PasswordLength < _passwordMinLength)
+                    _passwordDescriptor.PasswordLength = _passwordMinLength;
+                else if (_passwordDescriptor.PasswordLength > _passwordMaxLength)
+                    _passwordDescriptor.PasswordLength = _passwordMaxLength;
+            }
+        }
 
         private int _passwordMinLength = DEFAULT_PASSWORD_MIN_LENGTH;
         public int PasswordMinLength
@@ -54,22 +70,6 @@ namespace PasswordGenerator.Core
                     if (_passwordMaxLength < _passwordMinLength)
                         _passwordMinLength = _passwordMaxLength;
                 }
-            }
-        }
-
-        private PasswordDescriptor _passwordDescriptor;
-        public PasswordDescriptor PasswordDescriptor
-        {
-            get { return _passwordDescriptor; }
-
-            set
-            {             
-                _passwordDescriptor = value;
-
-                if (_passwordDescriptor.PasswordLength < _passwordMinLength)
-                    _passwordDescriptor.PasswordLength = _passwordMinLength;
-                else if (_passwordDescriptor.PasswordLength > _passwordMaxLength)
-                    _passwordDescriptor.PasswordLength = _passwordMaxLength;
             }
         }
 
