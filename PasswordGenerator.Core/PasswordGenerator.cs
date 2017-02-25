@@ -10,9 +10,10 @@ namespace PasswordGenerator.Core
     {
         const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
-        private readonly IHashCryptographer _cryptographer;
+
         private readonly string _key;
 
+        private readonly IHashCryptographer _cryptographer;
         private BytesToStringCoderBase _coder;
 
         private int _passwordMinLength = DEFAULT_PASSWORD_MIN_LENGTH;
@@ -84,9 +85,11 @@ namespace PasswordGenerator.Core
             _cryptographer = cryptographer;
             _key = key;
 
+            _cryptographer = cryptographer ?? GetDefaultCryptographer();
+
             PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
 
-           _coder = coder ?? GetDefaultBytesToStringCoder();            
+           _coder = coder ?? GetDefaultCoder();            
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -114,10 +117,7 @@ namespace PasswordGenerator.Core
 
             while (password.Length < descriptor.PasswordLength)
             {
-                var nextIteration = password;
-                nextIteration = _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(nextIteration)));
-
-                password += nextIteration;
+                password += _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(password)));
             }
 
             if (password.Length > descriptor.PasswordLength)
@@ -223,6 +223,11 @@ namespace PasswordGenerator.Core
             return charSet[index];
         }
 
+        private IHashCryptographer GetDefaultCryptographer()
+        {
+            return new PCLCryptographer();
+        }
+
         private PasswordDescriptor GetDefaultPasswordDescriptor()
         {
             return new PasswordDescriptor
@@ -236,7 +241,7 @@ namespace PasswordGenerator.Core
             };
         }
 
-        private BytesToStringCoderBase GetDefaultBytesToStringCoder()
+        private BytesToStringCoderBase GetDefaultCoder()
         {
             var coder = new SimpleCoder(null);
             ConfigurateCoderByDescriptor(coder, PasswordDescriptor);
