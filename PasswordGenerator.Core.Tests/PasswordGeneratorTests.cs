@@ -10,16 +10,44 @@ namespace PasswordGenerator.Core.Tests
     public class PasswordGeneratorTests
     {
         [Test]
+        public void PasswordMinLength_ForMaxLessThenMinLength_SetMinEqualMaxLength()
+        {
+            //arrange
+            var generator = GetGenerator();
+
+            //act
+            generator.PasswordMinLength = 10;
+            generator.PasswordMaxLength = 5;
+
+            //assert
+            Assert.AreEqual(5, generator.PasswordMinLength);
+        }
+
+        [Test]
+        public void PasswordMaxLength_ForMinMoreThenMaxLength_SetMaxEqualMinLength()
+        {
+            //arrange
+            var generator = GetGenerator();
+
+            //act
+            generator.PasswordMaxLength = 10;
+            generator.PasswordMinLength = 15;
+
+            //assert
+            Assert.AreEqual(15, generator.PasswordMaxLength);
+        }
+
+        [Test]
         public void PasswordMinLenght_ForMinLengthBelow1_SetMinLength1()
         {
             //arrange
             var generator = GetGenerator();
 
             //act
-            generator.PasswordMinLenght = -5;
+            generator.PasswordMinLength = -5;
 
             //assert
-            Assert.AreEqual(1, generator.PasswordMinLenght);
+            Assert.AreEqual(1, generator.PasswordMinLength);
         }
 
         [Test]
@@ -29,14 +57,14 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            generator.PasswordMaxLenght = 90;
+            generator.PasswordMaxLength = 90;
 
             //assert
-            Assert.AreEqual(40, generator.PasswordMaxLenght);
+            Assert.AreEqual(40, generator.PasswordMaxLength);
         }
 
         [Test]
-        public void PasswordDescriptor_ForPasswordLengthBelow6_SetPasswordLength6()
+        public void PasswordDescriptor_ForPasswordLengthBelow1_SetPasswordLength1()
         {
             //arrange
             var generator = GetGenerator();
