@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator.Core
 {
-    public class SimpleCoder : BytesToStringCoderBase
+    public class SimpleUniversalCoder : BytesToStringUniversalCoderBase
     {
-        public SimpleCoder(char[] alphabet) : base(alphabet) { }        
+        public SimpleUniversalCoder(char[] alphabet) : base(alphabet) { }        
         protected override string ConvertBytesToStringImplementation(byte[] data)
         {
             string xBaseString = String.Empty;

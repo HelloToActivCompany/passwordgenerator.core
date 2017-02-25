@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator.Core
 {
-    public abstract class BytesToStringCoderBase
+    public abstract class BytesToStringUniversalCoderBase : IBytesToStringConvertable
     {
         public char[] Alphabet { get; set; }
 
-        public BytesToStringCoderBase(char[] alphabet)
+        public BytesToStringUniversalCoderBase(char[] alphabet)
         {     
             Alphabet = alphabet;
         }

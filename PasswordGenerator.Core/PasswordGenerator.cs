@@ -14,7 +14,7 @@ namespace PasswordGenerator.Core
         private readonly string _key;
 
         private readonly IHashCryptographer _cryptographer;
-        private BytesToStringCoderBase _coder;
+        private BytesToStringUniversalCoderBase _coder;
         private PasswordDescriptor _passwordDescriptor;
         public PasswordDescriptor PasswordDescriptor
         {
@@ -73,7 +73,7 @@ namespace PasswordGenerator.Core
             }
         }
 
-        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
+        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, BytesToStringUniversalCoderBase coder = null)
         {           
             _key = key;
 
@@ -120,7 +120,7 @@ namespace PasswordGenerator.Core
             return password;
         }
 
-        private void ConfigurateCoderByDescriptor(BytesToStringCoderBase coder, PasswordDescriptor descriptor)
+        private void ConfigurateCoderByDescriptor(BytesToStringUniversalCoderBase coder, PasswordDescriptor descriptor)
         {
             var alphabet = new List<char>();
 
@@ -233,9 +233,9 @@ namespace PasswordGenerator.Core
             };
         }
 
-        private BytesToStringCoderBase GetDefaultCoder()
+        private BytesToStringUniversalCoderBase GetDefaultCoder()
         {
-            var coder = new SimpleCoder(null);
+            var coder = new SimpleUniversalCoder(null);
             ConfigurateCoderByDescriptor(coder, PasswordDescriptor);
 
             return coder;
