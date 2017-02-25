@@ -104,7 +104,7 @@ namespace PasswordGenerator.Core.Tests
         public void Constructor_WithoutPasswordDescriptorParam_CreatePasswordDescriptorByDefault()
         {
             //arrange
-            PasswordGenerator generator = new PasswordGenerator(new PCLCryptographer(), "key");
+            PasswordGenerator generator = new PasswordGenerator("key", new PCLCryptographer());
             var defaultDescriptor = new PasswordDescriptor
             {
                 LowerCase = true,
@@ -263,7 +263,7 @@ namespace PasswordGenerator.Core.Tests
 
         private PasswordGenerator GetGenerator()
         {
-            return new PasswordGenerator(new PCLCryptographer(PCLCrypto.HashAlgorithm.Md5), "key");
+            return new PasswordGenerator("key");
         }
     }
 }

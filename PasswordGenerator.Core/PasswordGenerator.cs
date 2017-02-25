@@ -73,14 +73,15 @@ namespace PasswordGenerator.Core
             }
         }
 
-        public PasswordGenerator(IHashCryptographer cryptographer, string key, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
-        {
-            _cryptographer = cryptographer;
+        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
+        {           
             _key = key;
+
+            _cryptographer = cryptographer ?? GetDefaultCryptographer();
 
             PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
 
-           _coder = coder ?? GetDefaultBytesToStringCoder();            
+           _coder = coder ?? GetDefaultCoder();            
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -217,6 +218,11 @@ namespace PasswordGenerator.Core
             return charSet[index];
         }
 
+        private IHashCryptographer GetDefaultCryptographer()
+        {
+            return new PCLCryptographer();
+        }
+
         private PasswordDescriptor GetDefaultPasswordDescriptor()
         {
             return new PasswordDescriptor
@@ -230,7 +236,7 @@ namespace PasswordGenerator.Core
             };
         }
 
-        private BytesToStringCoderBase GetDefaultBytesToStringCoder()
+        private BytesToStringCoderBase GetDefaultCoder()
         {
             var coder = new SimpleCoder(null);
             ConfigurateCoderByDescriptor(coder, PasswordDescriptor);
