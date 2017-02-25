@@ -11,9 +11,9 @@ namespace PasswordGenerator.Core
         const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
         const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
         private readonly IHashCryptographer _cryptographer;
+        private readonly string _key;
 
-
-        private readonly string _key;        
+        private BytesToStringCoderBase _coder;
 
         private int _passwordMinLenght = DEFAULT_PASSWORD_MIN_LENGTH;
         public int PasswordMinLenght
@@ -64,17 +64,15 @@ namespace PasswordGenerator.Core
                     _passwordDescriptor.PasswordLength = _passwordMaxLenght;
             }
         }
-        
-        public IStringBytesConvertable Coder { get; set; }     
 
-        public PasswordGenerator(IHashCryptographer cryptographer, string key, PasswordDescriptor? descriptor = null, IStringBytesConvertable coder = null)
+        public PasswordGenerator(IHashCryptographer cryptographer, string key, PasswordDescriptor descriptor = null, BytesToStringCoderBase coder = null)
         {
             _cryptographer = cryptographer;
             _key = key;
 
             PasswordDescriptor = descriptor ?? GetDefaultPasswordDescriptor();
 
-            Coder = coder ?? new Base91Coder();
+           _coder = coder ?? GetDefaultBytesToStringCoder();            
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -84,7 +82,7 @@ namespace PasswordGenerator.Core
 
             string forEncrypt = _key + input;
 
-            string password = GeneratePasswordInAccordanceWithDescriptor(forEncrypt, descriptor);
+            string password = GeneratePasswordForDescriptor(forEncrypt, descriptor);
 
             return password;
         }
@@ -94,80 +92,77 @@ namespace PasswordGenerator.Core
             return Generate(PasswordDescriptor, input);
         }
 
-        private string GeneratePasswordInAccordanceWithDescriptor(string input, PasswordDescriptor descriptor)
-        {     
-            string password = Coder.ConvertBytesToString(_cryptographer.Encrypt(Coder.ConvertStringToBytes(input)));
+        private string GeneratePasswordForDescriptor(string input, PasswordDescriptor descriptor)
+        {
+            ConfigurateCoderByDescriptor(_coder, descriptor);
 
-            password = FilterPassword(password, descriptor);
+            string password = _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(input)));
 
             while (password.Length < descriptor.PasswordLength)
             {
                 var nextIteration = password;
-                var nextFiltred = "";
+                nextIteration = _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(nextIteration)));
 
-                do
-                {
-                    nextIteration = Coder.ConvertBytesToString(_cryptographer.Encrypt(Coder.ConvertStringToBytes(nextIteration)));
-                    nextFiltred = FilterPassword(nextIteration, descriptor);
-                }
-                while (nextFiltred.Length == 0);
-
-                password += nextFiltred;
+                password += nextIteration;
             }
 
             if (password.Length > descriptor.PasswordLength)
                 password = password.Substring(0, descriptor.PasswordLength);
 
-            password = AddDeficientAccordingWithDescriptor(password, descriptor);
+            password = AddDeficientFromDescriptor(password, descriptor);
 
             return password;
         }
 
-        private string FilterPassword(string password, PasswordDescriptor descriptor)
+        private void ConfigurateCoderByDescriptor(BytesToStringCoderBase coder, PasswordDescriptor descriptor)
         {
-            return
-                new String(password.ToCharArray().Where(c =>
-                {
-                    return (descriptor.Digits || !char.IsDigit(c))
-                            && (descriptor.LowerCase || !char.IsLower(c))
-                            && (descriptor.UpperCase || !char.IsUpper(c))
-                            && (descriptor.SpecialSymbols || !Base91Coder.CharIsSpecial(c));
-                }).ToArray());
+            var alphabet = new List<char>();
+
+            if (descriptor.LowerCase)
+                alphabet.AddRange(PasswordDescriptor.Alphabet.LowerCase);
+            if (descriptor.UpperCase)
+                alphabet.AddRange(PasswordDescriptor.Alphabet.UpperCase);
+            if (descriptor.Digits)
+                alphabet.AddRange(PasswordDescriptor.Alphabet.Digits);
+            if (descriptor.SpecialSymbols)
+                alphabet.AddRange(PasswordDescriptor.Alphabet.SpecialSymbols);
+
+            coder.Alphabet = alphabet.ToArray();
         }
 
-        private string AddDeficientAccordingWithDescriptor(string password, PasswordDescriptor descriptor)
+        private byte[] ConvertStringToBytes(string str)
+        {
+            return Encoding.Unicode.GetBytes(str);
+        }
+
+        private string AddDeficientFromDescriptor(string password, PasswordDescriptor descriptor)
         {
             var lockedIndices = new List<int>();
 
-            while (!IsPasswordAccordingToDescription(password, descriptor))
+            while (!IsPasswordSatisfiesDescriptor(password, descriptor))
             {
-                if (descriptor.LowerCase && !Util.IsStringContainLowerCase(password))
-                    password = AddSymbol(password, Base91Coder.GetLowerCaseChars(), lockedIndices);
+                if (descriptor.LowerCase && !AlphabetUtil.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet))
+                    password = AddSymbol(password, PasswordDescriptor.Alphabet.LowerCase, lockedIndices);
 
-                if (descriptor.UpperCase && !Util.IsStringContainUpperCase(password))
-                    password = AddSymbol(password, Base91Coder.GetUpperCaseChars(), lockedIndices);
+                if (descriptor.UpperCase && !AlphabetUtil.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet))
+                    password = AddSymbol(password, PasswordDescriptor.Alphabet.UpperCase, lockedIndices);
 
-                if (descriptor.Digits && !Util.IsStringContainDigits(password))
-                    password = AddSymbol(password, Base91Coder.GetDigits(), lockedIndices);
+                if (descriptor.Digits && !AlphabetUtil.IsStringContainDigits(password, PasswordDescriptor.Alphabet))
+                    password = AddSymbol(password, PasswordDescriptor.Alphabet.Digits, lockedIndices);
 
-                if (descriptor.SpecialSymbols && !IsStringContainSpecialSymbols(password))
-                    password = AddSymbol(password, Base91Coder.GetSpecialChars(), lockedIndices);
+                if (descriptor.SpecialSymbols && !AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet))
+                    password = AddSymbol(password, PasswordDescriptor.Alphabet.SpecialSymbols, lockedIndices);
             }
 
             return password;
         }
 
-        private bool IsPasswordAccordingToDescription(string password, PasswordDescriptor descriptor)
+        private bool IsPasswordSatisfiesDescriptor(string password, PasswordDescriptor descriptor)
         {
-            return (descriptor.LowerCase ? Util.IsStringContainLowerCase(password) : true) 
-                    && (descriptor.UpperCase ? Util.IsStringContainUpperCase(password) : true)
-                    && (descriptor.Digits ? Util.IsStringContainDigits(password) : true)
-                    && (descriptor.SpecialSymbols ? IsStringContainSpecialSymbols(password) : true);
-        }
-
-        private bool IsStringContainSpecialSymbols(string str)
-        {
-            return str.ToCharArray().Any(c => Base91Coder.CharIsSpecial(c));
+            return (descriptor.LowerCase ? AlphabetUtil.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet) : true) 
+                    && (descriptor.UpperCase ? AlphabetUtil.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet) : true)
+                    && (descriptor.Digits ? AlphabetUtil.IsStringContainDigits(password, PasswordDescriptor.Alphabet) : true)
+                    && (descriptor.SpecialSymbols ? AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet) : true);
         }
 
         private string AddSymbol(string str, char[] charSet, List<int> lockedIndices)
@@ -198,7 +193,7 @@ namespace PasswordGenerator.Core
 
         private int GetAggregateHashValue(string str)
         {
-            var hash = _cryptographer.Encrypt(Coder.ConvertStringToBytes(str));
+            var hash = _cryptographer.Encrypt(ConvertStringToBytes(str));
 
             int aggregateHash = hash.Aggregate(0, (s, i) => s + i);
 
@@ -222,17 +217,44 @@ namespace PasswordGenerator.Core
                 UpperCase = true,
                 Digits = true,
                 SpecialSymbols = true,
-                PasswordLength = 18
+                PasswordLength = 18,
+                Alphabet = GetDefaultAlphabet()
             };
+        }
+
+        private BytesToStringCoderBase GetDefaultBytesToStringCoder()
+        {
+            var coder = new SimpleCoder(null);
+            ConfigurateCoderByDescriptor(coder, PasswordDescriptor);
+
+            return coder;
+        }
+
+        private Alphabet GetDefaultAlphabet()
+        {
+            return new Alphabet()
+            {
+                LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray(),
+                UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(),
+                Digits = "0123456789".ToCharArray(),
+                SpecialSymbols = "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray()
+            };             
         }
     }
 
-    public struct PasswordDescriptor
+    public class PasswordDescriptor
     {
-        public bool LowerCase;
+        public bool LowerCase;     
         public bool UpperCase;
         public bool Digits;
         public bool SpecialSymbols;
+        public Alphabet Alphabet { get; set; }
+
         public int PasswordLength;
+
+        public PasswordDescriptor()
+        {
+            Alphabet = new Alphabet();
+        }
     }
 }

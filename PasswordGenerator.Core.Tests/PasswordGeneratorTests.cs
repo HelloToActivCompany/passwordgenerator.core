@@ -1,6 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
 using Moq;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PasswordGenerator.Core.Tests
 {
@@ -81,21 +83,47 @@ namespace PasswordGenerator.Core.Tests
                 UpperCase = true,
                 Digits = true,
                 SpecialSymbols = true,
-                PasswordLength = 18
+                PasswordLength = 18,
+                Alphabet = GetDefaultAlphabet()
             };
 
             //assert
-            Assert.AreEqual(defaultDescriptor, generator.PasswordDescriptor);
+            Assert.True(PasswordDescriptorEquals(defaultDescriptor, generator.PasswordDescriptor));
         }
 
-        [Test]
-        public void Constructor_WithoutCoderParam_CreateCoderByDefault()
+        private bool PasswordDescriptorEquals(PasswordDescriptor lh, PasswordDescriptor rh)
         {
-            //arrange
-            PasswordGenerator generator = new PasswordGenerator(new PCLCryptographer(), "key");
+            if (lh.PasswordLength != rh.PasswordLength)
+                return false;
+            if (lh.LowerCase != rh.LowerCase)
+                return false;
+            if (lh.UpperCase != rh.UpperCase)
+                return false;
+            if (lh.Digits != rh.Digits)
+                return false;
+            if (lh.SpecialSymbols != rh.SpecialSymbols)
+                return false;
+            if (!lh.Alphabet.LowerCase.SequenceEqual(rh.Alphabet.LowerCase))
+                return false;
+            if (!lh.Alphabet.UpperCase.SequenceEqual(rh.Alphabet.UpperCase))
+                return false;
+            if (!lh.Alphabet.Digits.SequenceEqual(rh.Alphabet.Digits))
+                return false;
+            if (!lh.Alphabet.SpecialSymbols.SequenceEqual(rh.Alphabet.SpecialSymbols))
+                return false;
 
-            //assert
-            Assert.IsTrue(generator.Coder is Base91Coder);
+            return true;
+        }
+
+        private Alphabet GetDefaultAlphabet()
+        {
+            return new Alphabet()
+            {
+                LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray(),
+                UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(),
+                Digits = "0123456789".ToCharArray(),
+                SpecialSymbols = "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray()
+            };
         }
 
         [TestCase("")]
@@ -137,6 +165,7 @@ namespace PasswordGenerator.Core.Tests
                 SpecialSymbols = specialSymbols,
                 PasswordLength = passwordLength
             };
+            ConfigurateDefaultDescriptorAlphabet(descriptor);
 
             var generator = GetGenerator();
 
@@ -144,36 +173,64 @@ namespace PasswordGenerator.Core.Tests
             var password = generator.Generate(descriptor, input);
 
             //assert
-            Assert.IsTrue(IsPasswordMatchesDescription(password, descriptor));
+            Assert.IsTrue(IsPasswordSatisfiesDescriptor(password, descriptor));
         }
 
-        private bool IsPasswordMatchesDescription(string password, PasswordDescriptor descriptor)
+        private void ConfigurateDefaultDescriptorAlphabet(PasswordDescriptor descriptor)
+        {
+            var alphabet = new List<char>();
+
+            if (descriptor.LowerCase)
+                descriptor.Alphabet.LowerCase = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+            if (descriptor.UpperCase)
+                descriptor.Alphabet.UpperCase= "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            if (descriptor.Digits)
+                descriptor.Alphabet.Digits= "0123456789".ToCharArray();
+            if (descriptor.SpecialSymbols)
+                descriptor.Alphabet.SpecialSymbols= "!#$%&()*+,./:;<=>?@[]^_`{|}~ ".ToCharArray();            
+        }
+
+
+        private bool IsPasswordSatisfiesDescriptor(string password, PasswordDescriptor descriptor)
         {
             if (password.Length != descriptor.PasswordLength)
                 return false;
 
-            var currentDescriptor = new PasswordDescriptor
-            {
-                LowerCase = false,
-                UpperCase = false,
-                Digits = false,
-                SpecialSymbols = false,
-                PasswordLength = password.Length
-            };
+            var tempPassword = password.ToCharArray();
 
-            foreach (var c in password)
+            if (descriptor.LowerCase)
             {
-                if (char.IsDigit(c))    currentDescriptor.Digits = true;
-                if (char.IsLower(c))    currentDescriptor.LowerCase = true;
-                if (char.IsUpper(c))    currentDescriptor.UpperCase= true;
-                if (Base91Coder.CharIsSpecial(c)) currentDescriptor.SpecialSymbols = true;
-
-                if (currentDescriptor.LowerCase && currentDescriptor.UpperCase &&
-                    currentDescriptor.Digits && currentDescriptor.SpecialSymbols)
-                    break;
+                var tempPasswordLengthBefore = tempPassword.Length;
+                tempPassword = tempPassword.Except(descriptor.Alphabet.LowerCase).ToArray();
+                if (tempPassword.Length == tempPasswordLengthBefore)
+                    return false;
+            }
+            if (descriptor.UpperCase)
+            {
+                var tempPasswordLengthBefore = tempPassword.Length;
+                tempPassword = tempPassword.Except(descriptor.Alphabet.UpperCase).ToArray();
+                if (tempPassword.Length == tempPasswordLengthBefore)
+                    return false;
+            }
+            if (descriptor.Digits)
+            {
+                var tempPasswordLengthBefore = tempPassword.Length;
+                tempPassword = tempPassword.Except(descriptor.Alphabet.Digits).ToArray();
+                if (tempPassword.Length == tempPasswordLengthBefore)
+                    return false;
+            }
+            if (descriptor.SpecialSymbols)
+            {
+                var tempPasswordLengthBefore = tempPassword.Length;
+                tempPassword = tempPassword.Except(descriptor.Alphabet.SpecialSymbols).ToArray();
+                if (tempPassword.Length == tempPasswordLengthBefore)
+                    return false;
             }
 
-            return currentDescriptor.Equals(descriptor);
+            if (tempPassword.Length != 0)
+                return false;
+
+            return true;            
         }
 
         private PasswordGenerator GetGenerator()

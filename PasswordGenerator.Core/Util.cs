@@ -39,20 +39,5 @@ namespace PasswordGenerator.Core
 
             return dividers.ToArray();
         }
-        
-        public static bool IsStringContainLowerCase(string str)
-        {
-            return Regex.IsMatch(str, "[a-z]");
-        }
-
-        public static bool IsStringContainUpperCase(string str)
-        {
-            return Regex.IsMatch(str, "[A-Z]");
-        }
-
-        public static bool IsStringContainDigits(string str)
-        {
-            return Regex.IsMatch(str, "[0-9]");
-        }       
     }
 }

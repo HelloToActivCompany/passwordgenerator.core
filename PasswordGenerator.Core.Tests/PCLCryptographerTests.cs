@@ -8,7 +8,7 @@ using System.Linq;
 namespace PasswordGenerator.Core.Tests
 {
     [TestFixture]
-    public class HashCryptographerTests
+    public class PCLCryptographerTests
     {
         [Test]
         public void Encrypt_ForEqualData_GenerateEqualCrypts()
