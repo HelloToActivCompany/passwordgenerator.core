@@ -109,10 +109,7 @@ namespace PasswordGenerator.Core
 
             while (password.Length < descriptor.PasswordLength)
             {
-                var nextIteration = password;
-                nextIteration = _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(nextIteration)));
-
-                password += nextIteration;
+                password += _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(password)));
             }
 
             if (password.Length > descriptor.PasswordLength)
