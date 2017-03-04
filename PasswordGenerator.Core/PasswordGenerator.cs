@@ -223,7 +223,7 @@ namespace PasswordGenerator.Core
 
         private IHashCryptographer GetDefaultCryptographer()
         {
-            return new PCLCryptographer();
+            return new CompositePCLCryptographer();
         }
 
         private PasswordDescriptor GetDefaultPasswordDescriptor()

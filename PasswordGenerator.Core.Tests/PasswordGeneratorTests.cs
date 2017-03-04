@@ -125,7 +125,7 @@ namespace PasswordGenerator.Core.Tests
         public void Constructor_WithoutPasswordDescriptorParam_CreatePasswordDescriptorByDefault()
         {
             //arrange
-            PasswordGenerator generator = new PasswordGenerator("key", new PCLCryptographer());
+            PasswordGenerator generator = new PasswordGenerator("key", new CompositePCLCryptographer());
             var defaultDescriptor = new PasswordDescriptor
             {
                 LowerCase = true,
