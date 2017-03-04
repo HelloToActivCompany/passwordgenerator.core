@@ -55,23 +55,36 @@ namespace PasswordGenerator.Core
 
         public Alphabet(string alphabet)
         {
+            _lowerCase = new List<char>();
+            _upperCase = new List<char>();
+            _digits = new List<char>();
+            _specialSymbols = new List<char>();
+            _unsupported = new List<char>();
+
             foreach (char c in alphabet)
             {
                 Add(c);
             }
         }
 
-        public void Add(char c)
+        public void Add(char symbol)
         {
-            if (char.IsLower(c))
-                _lowerCase.Add(c);
-            else if (char.IsUpper(c))
-                _upperCase.Add(c);
-            else if (char.IsDigit(c))
-                _digits.Add(c);
-            else if (_defaultSpecialSymbols.Contains(c))
-                _specialSymbols.Add(c);
-            else _unsupported.Add(c);
+            if (char.IsLower(symbol))
+                _lowerCase.Add(symbol);
+            else if (char.IsUpper(symbol))
+                _upperCase.Add(symbol);
+            else if (char.IsDigit(symbol))
+                _digits.Add(symbol);
+            else if (_defaultSpecialSymbols.Contains(symbol))
+                _specialSymbols.Add(symbol);
+            else _unsupported.Add(symbol);
+        }
+        public void Add(string symbols)
+        {
+            foreach (char c in symbols)
+            {
+                Add(c);
+            }
         }
 
         public bool IsLowerCase(char c)

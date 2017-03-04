@@ -153,16 +153,16 @@ namespace PasswordGenerator.Core
 
             while (!IsPasswordSatisfiesDescriptor(password, descriptor))
             {
-                if (descriptor.LowerCase && !AlphabetUtil.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet))
+                if (descriptor.LowerCase && !AlphabetHelper.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet))
                     password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.LowerCase, lockedIndices);
 
-                if (descriptor.UpperCase && !AlphabetUtil.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet))
+                if (descriptor.UpperCase && !AlphabetHelper.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet))
                     password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.UpperCase, lockedIndices);
 
-                if (descriptor.Digits && !AlphabetUtil.IsStringContainDigits(password, PasswordDescriptor.Alphabet))
+                if (descriptor.Digits && !AlphabetHelper.IsStringContainDigits(password, PasswordDescriptor.Alphabet))
                     password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.Digits, lockedIndices);
 
-                if (descriptor.SpecialSymbols && !AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet))
+                if (descriptor.SpecialSymbols && !AlphabetHelper.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet))
                     password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.SpecialSymbols, lockedIndices);
             }
 
@@ -171,10 +171,10 @@ namespace PasswordGenerator.Core
 
         private bool IsPasswordSatisfiesDescriptor(string password, PasswordDescriptor descriptor)
         {
-            return (descriptor.LowerCase ? AlphabetUtil.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet) : true) 
-                    && (descriptor.UpperCase ? AlphabetUtil.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet) : true)
-                    && (descriptor.Digits ? AlphabetUtil.IsStringContainDigits(password, PasswordDescriptor.Alphabet) : true)
-                    && (descriptor.SpecialSymbols ? AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet) : true);
+            return (descriptor.LowerCase ? AlphabetHelper.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet) : true) 
+                    && (descriptor.UpperCase ? AlphabetHelper.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet) : true)
+                    && (descriptor.Digits ? AlphabetHelper.IsStringContainDigits(password, PasswordDescriptor.Alphabet) : true)
+                    && (descriptor.SpecialSymbols ? AlphabetHelper.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet) : true);
         }
 
         private string AddSymbol(string str, IList<char> charSet, List<int> lockedIndices)
