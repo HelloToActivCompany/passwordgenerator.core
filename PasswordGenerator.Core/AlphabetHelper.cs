@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator.Core
 {
-    //TODO: move methods to the PasswordDescriptor
     public static class AlphabetHelper
     {
         public static bool IsStringContainLowerCase(string str, Alphabet alphabet)
