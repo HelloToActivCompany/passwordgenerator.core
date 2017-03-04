@@ -85,7 +85,7 @@ namespace PasswordGenerator.Core
                  
             _key = key;
 
-            _cryptographer = cryptographer ?? new PCLCryptographer();
+            _cryptographer = cryptographer ?? new CompositePCLCryptographer();
 
             _coder = coder ?? new SimpleUniversalCoder();      
         }
