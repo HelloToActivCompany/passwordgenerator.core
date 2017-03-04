@@ -8,7 +8,7 @@ namespace PasswordGenerator.Core
 {
     public class PasswordGenerator
     {
-        private const int DEFAULT_PASSWORD_MIN_LENGTH = 1;
+        private const int DEFAULT_PASSWORD_MIN_LENGTH = 4;
         private const int DEFAULT_PASSWORD_MAX_LENGTH = 40;
 
         private readonly string _key;

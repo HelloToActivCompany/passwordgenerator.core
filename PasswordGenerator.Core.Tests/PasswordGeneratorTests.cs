@@ -59,7 +59,7 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void PasswordMinLenght_ForMinLengthBelow1_SetMinLength1()
+        public void PasswordMinLenght_ForMinLengthBelow4_SetMinLength4()
         {
             //arrange
             var generator = GetGenerator();
@@ -68,7 +68,7 @@ namespace PasswordGenerator.Core.Tests
             generator.PasswordMinLength = -5;
 
             //assert
-            Assert.AreEqual(1, generator.PasswordMinLength);
+            Assert.AreEqual(4, generator.PasswordMinLength);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace PasswordGenerator.Core.Tests
         }
 
         [Test]
-        public void PasswordDescriptor_ForPasswordLengthBelow1_SetPasswordLength1()
+        public void PasswordDescriptor_ForPasswordLengthBelow4_SetPasswordLength4()
         {
             //arrange
             var generator = GetGenerator();
@@ -99,7 +99,7 @@ namespace PasswordGenerator.Core.Tests
             generator.PasswordDescriptor = shortPasswordDescriptor;
 
             //assert
-            Assert.AreEqual(generator.PasswordDescriptor.PasswordLength, 1);
+            Assert.AreEqual(generator.PasswordDescriptor.PasswordLength, 4);
         }
 
         [Test]
