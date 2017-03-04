@@ -15,10 +15,10 @@ namespace PasswordGenerator.Core.Tests
         public void ConvertBytesToString_ForSameBytes_ReturnSameString(byte[] data, char[] alphabet)
         {
             //arrange
-            var coder = new SimpleUniversalCoder(alphabet);
+            var coder = new SimpleUniversalCoder();
 
             //assert
-            Assert.AreEqual(coder.ConvertBytesToString(data), coder.ConvertBytesToString(data));
+            Assert.AreEqual(coder.ConvertBytesToString(data, alphabet), coder.ConvertBytesToString(data, alphabet));
         }
     }
 }

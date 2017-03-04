@@ -85,9 +85,9 @@ namespace PasswordGenerator.Core
                  
             _key = key;
 
-            _cryptographer = cryptographer ?? GetDefaultCryptographer();
+            _cryptographer = cryptographer ?? new PCLCryptographer();
 
-            _coder = coder ?? GetDefaultCoder();      
+            _coder = coder ?? new SimpleUniversalCoder();      
         }
 
         public string Generate(PasswordDescriptor descriptor, string input)
@@ -109,13 +109,11 @@ namespace PasswordGenerator.Core
 
         private string GeneratePasswordForDescriptor(string input, PasswordDescriptor descriptor)
         {
-            ConfigurateCoderByDescriptor(_coder, descriptor);
-
-            string password = _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(input)));
+            string password = _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(input)), descriptor.GetCharArray());
 
             while (password.Length < descriptor.PasswordLength)
             {
-                password += _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(password)));
+                password += _coder.ConvertBytesToString(_cryptographer.Encrypt(ConvertStringToBytes(password)), descriptor.GetCharArray());
             }
 
             if (password.Length > descriptor.PasswordLength)
@@ -124,22 +122,6 @@ namespace PasswordGenerator.Core
             password = AddDeficientFromDescriptor(password, descriptor);
 
             return password;
-        }
-
-        private void ConfigurateCoderByDescriptor(UniversalAlphabetCoderBase coder, PasswordDescriptor descriptor)
-        {
-            var alphabet = new List<char>();
-
-            if (descriptor.LowerCase)
-                alphabet.AddRange(PasswordDescriptor.Alphabet.LowerCase);
-            if (descriptor.UpperCase)
-                alphabet.AddRange(PasswordDescriptor.Alphabet.UpperCase);
-            if (descriptor.Digits)
-                alphabet.AddRange(PasswordDescriptor.Alphabet.Digits);
-            if (descriptor.SpecialSymbols)
-                alphabet.AddRange(PasswordDescriptor.Alphabet.SpecialSymbols);
-
-            coder.Alphabet = alphabet.ToArray();
         }
 
         private byte[] ConvertStringToBytes(string str)
@@ -221,11 +203,6 @@ namespace PasswordGenerator.Core
             return charSet[index];
         }
 
-        private IHashCryptographer GetDefaultCryptographer()
-        {
-            return new PCLCryptographer();
-        }
-
         private PasswordDescriptor GetDefaultPasswordDescriptor()
         {
             return new PasswordDescriptor
@@ -236,15 +213,7 @@ namespace PasswordGenerator.Core
                 SpecialSymbols = true,
                 PasswordLength = 18,
             };
-        }
-
-        private UniversalAlphabetCoderBase GetDefaultCoder()
-        {
-            var coder = new SimpleUniversalCoder(null);
-            ConfigurateCoderByDescriptor(coder, PasswordDescriptor);
-
-            return coder;
-        }        
+        }     
     }
 
     public class PasswordDescriptor
@@ -268,5 +237,21 @@ namespace PasswordGenerator.Core
         public bool Digits { get; set; }
         public bool SpecialSymbols { get; set; }
         public int PasswordLength { get; set; }
+
+        public char[] GetCharArray()
+        {
+            var alphabet = new List<char>();
+
+            if (LowerCase)
+                alphabet.AddRange(Alphabet.LowerCase);
+            if (UpperCase)
+                alphabet.AddRange(Alphabet.UpperCase);
+            if (Digits)
+                alphabet.AddRange(Alphabet.Digits);
+            if (SpecialSymbols)
+                alphabet.AddRange(Alphabet.SpecialSymbols);
+
+            return alphabet.ToArray();
+        }
     }
 }

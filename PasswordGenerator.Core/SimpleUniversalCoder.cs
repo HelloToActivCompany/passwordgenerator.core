@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 namespace PasswordGenerator.Core
 {
     public class SimpleUniversalCoder : UniversalAlphabetCoderBase
-    {
-        public SimpleUniversalCoder(char[] alphabet) : base(alphabet) { }        
-        protected override string ConvertBytesToStringImplementation(byte[] data)
+    {              
+        protected override string ConvertBytesToStringImplementation(byte[] data, char[] alphabet)
         {
             string xBaseString = String.Empty;
 
-            int xBase = Alphabet.Length;
+            int xBase = alphabet.Length;
 
             int borderValue = xBase - 1;
             int borderValueBitsCount = GetBitCount(borderValue);
@@ -46,7 +45,7 @@ namespace PasswordGenerator.Core
 
                     if (inEncodeTable <= borderValue)
                     {
-                        xBaseString += Alphabet[inEncodeTable];
+                        xBaseString += alphabet[inEncodeTable];
 
                         if (available == need)
                         {
@@ -68,7 +67,7 @@ namespace PasswordGenerator.Core
                             stockBitsCount = 1;
                         }
 
-                        xBaseString += Alphabet[improvedInEncodeTable];
+                        xBaseString += alphabet[improvedInEncodeTable];
 
 
                         if (available == need)
@@ -89,10 +88,10 @@ namespace PasswordGenerator.Core
             {
                 var inEncodeTable = stockBits << (borderValueBitsCount - stockBitsCount);
                 if (inEncodeTable <= borderValue)
-                    xBaseString += Alphabet[inEncodeTable];
+                    xBaseString += alphabet[inEncodeTable];
                 else
                 {
-                    xBaseString += Alphabet[inEncodeTable & GetMaxNBitsNumber(borderValueBitsCount - 1)];
+                    xBaseString += alphabet[inEncodeTable & GetMaxNBitsNumber(borderValueBitsCount - 1)];
                 }
             }
                         

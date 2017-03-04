@@ -6,30 +6,18 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator.Core
 {
-    public abstract class UniversalAlphabetCoderBase : IBytesToStringConvertable
+    public abstract class UniversalAlphabetCoderBase
     {
-        public char[] Alphabet { get; set; }
-
-        public UniversalAlphabetCoderBase(char[] alphabet)
-        {     
-            Alphabet = alphabet;
-        }
-
-        public string ConvertBytesToString(byte[] data)
+        public string ConvertBytesToString(byte[] data, char[] alphabet)
         {
-            ValidationAlphabet();
-
-            return ConvertBytesToStringImplementation(data);
-        }
-
-        private void ValidationAlphabet()
-        {
-            if (Alphabet == null)
+            if (alphabet == null)
                 throw new NullReferenceException("Alphabet");
-            if (Alphabet.Length == 0)
+            if (alphabet.Length == 0)
                 throw new ArgumentException("Alphabet should'nt be empty");
+
+            return ConvertBytesToStringImplementation(data, alphabet);
         }
 
-        protected abstract string ConvertBytesToStringImplementation(byte[] data);
+        protected abstract string ConvertBytesToStringImplementation(byte[] data, char[] alphabet);
     }
 }
