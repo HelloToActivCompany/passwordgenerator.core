@@ -154,16 +154,16 @@ namespace PasswordGenerator.Core
             while (!IsPasswordSatisfiesDescriptor(password, descriptor))
             {
                 if (descriptor.LowerCase && !AlphabetUtil.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, PasswordDescriptor.Alphabet.LowerCase, lockedIndices);
+                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.LowerCase, lockedIndices);
 
                 if (descriptor.UpperCase && !AlphabetUtil.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, PasswordDescriptor.Alphabet.UpperCase, lockedIndices);
+                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.UpperCase, lockedIndices);
 
                 if (descriptor.Digits && !AlphabetUtil.IsStringContainDigits(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, PasswordDescriptor.Alphabet.Digits, lockedIndices);
+                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.Digits, lockedIndices);
 
                 if (descriptor.SpecialSymbols && !AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, PasswordDescriptor.Alphabet.SpecialSymbols, lockedIndices);
+                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.SpecialSymbols, lockedIndices);
             }
 
             return password;
@@ -177,7 +177,7 @@ namespace PasswordGenerator.Core
                     && (descriptor.SpecialSymbols ? AlphabetUtil.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet) : true);
         }
 
-        private string AddSymbol(string str, IReadOnlyList<char> charSet, List<int> lockedIndices)
+        private string AddSymbol(string str, IList<char> charSet, List<int> lockedIndices)
         {
             int aggregateHashValue = GetAggregateHashValue(str);
 
@@ -212,7 +212,7 @@ namespace PasswordGenerator.Core
             return aggregateHash;
         }
 
-        private char GetAddingChar(string str, IReadOnlyList<char> charSet)
+        private char GetAddingChar(string str, IList<char> charSet)
         {
             int aggregateHashValue = GetAggregateHashValue(str);
 
