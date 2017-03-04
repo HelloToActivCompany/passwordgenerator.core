@@ -55,7 +55,7 @@ namespace PasswordGenerator.Core
                         }
                         else
                         {
-                            available = 8 - need;
+                            available = available - need;
                             currentByte >>= need;
                         }
                     }
