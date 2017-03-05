@@ -12,6 +12,7 @@ namespace PasswordGenerator.Core
         {
             return first.Intersect(second).Count() > 0;
         }
+
         public static int GetMinRelativelyPrimeNumber(int number)
         {
             int res = -1;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PasswordGenerator.Core
 {
-    public abstract class UniversalAlphabetCoderBase
+    public abstract class CoderBase
     {
         public string ConvertBytesToString(byte[] data, char[] alphabet)
         {

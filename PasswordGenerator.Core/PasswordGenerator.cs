@@ -14,7 +14,7 @@ namespace PasswordGenerator.Core
         private readonly string _key;
 
         private readonly IHashCryptographer _cryptographer;
-        private UniversalAlphabetCoderBase _coder;
+        private CoderBase _coder;
         private PasswordDescriptor _passwordDescriptor;
         public PasswordDescriptor PasswordDescriptor
         {
@@ -79,15 +79,15 @@ namespace PasswordGenerator.Core
             }
         }
 
-        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, UniversalAlphabetCoderBase coder = null)
+        public PasswordGenerator(string key, IHashCryptographer cryptographer = null, PasswordDescriptor descriptor = null, CoderBase coder = null)
         {
             PasswordDescriptor = descriptor; 
                  
             _key = key;
 
-            _cryptographer = cryptographer ?? new CompositePCLCryptographer();
+            _cryptographer = cryptographer ?? new PCLCryptographer();
 
-            _coder = coder ?? new SimpleUniversalCoder();      
+            _coder = coder ?? new Coder();      
         }
 
         public string Generate(string input, PasswordDescriptor descriptor)

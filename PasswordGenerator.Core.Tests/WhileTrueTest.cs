@@ -5,9 +5,6 @@ using System.Linq;
 
 namespace PasswordGenerator.Core.Tests
 {
-    /// <summary>
-    /// Сводное описание для WhileTrueTest
-    /// </summary>
     [TestFixture]
     [Ignore("this is while(true) for super test a password generator")]
     public class WhileTrueTest
@@ -16,7 +13,7 @@ namespace PasswordGenerator.Core.Tests
 
         [Test]
         [Ignore("this is while(true) for super test a password generator")]
-        public void supertest()
+        public void SuperTest()
         {
             long count = 0;
 
