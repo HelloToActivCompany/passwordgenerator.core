@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace PasswordGenerator.Core.Tests
 {
     [TestFixture]
-    public class SimpleUniversalCoderTests
+    public class CoderTests
     {
         [TestCase(new Byte[] { 0, 1, 2, 3, 38, 56, 44, 32 }, new char[] { 'a', 'b', 'c', 'A', 'B', 'C', '1', '3', '5' })]
         [TestCase(new Byte[] { 38, 56, 44, 32 }, new char[] { '1', '3', '5' })]
