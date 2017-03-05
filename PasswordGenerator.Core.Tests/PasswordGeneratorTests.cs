@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Moq;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PasswordGenerator.Core.Tests
 {
@@ -257,6 +258,6 @@ namespace PasswordGenerator.Core.Tests
         private PasswordGenerator GetGenerator()
         {
             return new PasswordGenerator("key");
-        }
+        }        
     }
 }
