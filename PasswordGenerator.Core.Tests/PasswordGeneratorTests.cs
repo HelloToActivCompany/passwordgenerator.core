@@ -206,7 +206,7 @@ namespace PasswordGenerator.Core.Tests
             var generator = GetGenerator();
 
             //act
-            var password = generator.Generate(descriptor, input);
+            var password = generator.Generate(input, descriptor);
 
             //assert
             Assert.IsTrue(IsPasswordSatisfiesDescriptor(password, descriptor));

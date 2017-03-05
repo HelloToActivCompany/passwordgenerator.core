@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,6 +8,10 @@ namespace PasswordGenerator.Core
 {
     public static class Util
     {
+        public static bool ContainsElementFrom<T>(this IEnumerable<T> first, IEnumerable<T> second)
+        {
+            return first.Intersect(second).Count() > 0;
+        }
         public static int GetMinRelativelyPrimeNumber(int number)
         {
             int res = -1;
@@ -38,6 +43,6 @@ namespace PasswordGenerator.Core
             if (n>1) dividers.Add(n);
 
             return dividers.ToArray();
-        }
+        }        
     }
 }

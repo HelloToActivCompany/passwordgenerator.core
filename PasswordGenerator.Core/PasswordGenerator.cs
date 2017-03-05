@@ -90,7 +90,7 @@ namespace PasswordGenerator.Core
             _coder = coder ?? new SimpleUniversalCoder();      
         }
 
-        public string Generate(PasswordDescriptor descriptor, string input)
+        public string Generate(string input, PasswordDescriptor descriptor)
         {
             if (string.IsNullOrWhiteSpace(input))
                 throw new ArgumentException("input");
@@ -104,7 +104,7 @@ namespace PasswordGenerator.Core
 
         public string Generate(string input)
         {
-            return Generate(PasswordDescriptor, input);
+            return Generate(input, PasswordDescriptor);
         }
 
         private string GeneratePasswordForDescriptor(string input, PasswordDescriptor descriptor)
@@ -119,7 +119,7 @@ namespace PasswordGenerator.Core
             if (password.Length > descriptor.PasswordLength)
                 password = password.Substring(0, descriptor.PasswordLength);
 
-            password = AddDeficientFromDescriptor(password, descriptor);
+            password = AddDeficientsFromDescriptor(password, descriptor);
 
             return password;
         }
@@ -129,37 +129,56 @@ namespace PasswordGenerator.Core
             return Encoding.Unicode.GetBytes(str);
         }
 
-        private string AddDeficientFromDescriptor(string password, PasswordDescriptor descriptor)
+        private string AddDeficientsFromDescriptor(string password, PasswordDescriptor descriptor)
         {
             var lockedIndices = new List<int>();
 
-            while (!IsPasswordSatisfiesDescriptor(password, descriptor))
+            if (descriptor.LowerCase)
             {
-                if (descriptor.LowerCase && !AlphabetHelper.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.LowerCase, lockedIndices);
+                password = AddDeficientIfNessesary(password, descriptor.Alphabet.LowerCase, lockedIndices);
+            }
 
-                if (descriptor.UpperCase && !AlphabetHelper.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.UpperCase, lockedIndices);
+            if (descriptor.UpperCase)
+            {
+                password = AddDeficientIfNessesary(password, descriptor.Alphabet.UpperCase, lockedIndices);
+            }
 
-                if (descriptor.Digits && !AlphabetHelper.IsStringContainDigits(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.Digits, lockedIndices);
+            if (descriptor.Digits)
+            {
+                password = AddDeficientIfNessesary(password, descriptor.Alphabet.Digits, lockedIndices);
+            }
 
-                if (descriptor.SpecialSymbols && !AlphabetHelper.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet))
-                    password = AddSymbol(password, (IList<char>)PasswordDescriptor.Alphabet.SpecialSymbols, lockedIndices);
+            if (descriptor.SpecialSymbols)
+            {
+                password = AddDeficientIfNessesary(password, descriptor.Alphabet.SpecialSymbols, lockedIndices);
             }
 
             return password;
         }
 
-        private bool IsPasswordSatisfiesDescriptor(string password, PasswordDescriptor descriptor)
-        {
-            return (descriptor.LowerCase ? AlphabetHelper.IsStringContainLowerCase(password, PasswordDescriptor.Alphabet) : true) 
-                    && (descriptor.UpperCase ? AlphabetHelper.IsStringContainUpperCase(password, PasswordDescriptor.Alphabet) : true)
-                    && (descriptor.Digits ? AlphabetHelper.IsStringContainDigits(password, PasswordDescriptor.Alphabet) : true)
-                    && (descriptor.SpecialSymbols ? AlphabetHelper.IsStringContainSpecialSymbols(password, PasswordDescriptor.Alphabet) : true);
+        private string AddDeficientIfNessesary(string password, IReadOnlyList<char> set, List<int> lockedIndices)
+        {           
+            if (!password.ToCharArray().ContainsElementFrom(set))
+            {
+                password = AddSymbol(password, set, lockedIndices);                
+            }
+            else
+            {
+                for (int i = 0; i < set.Count(); i++)
+                {
+                    int indx;
+                    if ((indx = password.IndexOf(set[i])) != -1)
+                    {
+                        lockedIndices.Add(indx);
+                        break;
+                    }
+                }
+            }      
+
+            return password;
         }
 
-        private string AddSymbol(string str, IList<char> charSet, List<int> lockedIndices)
+        private string AddSymbol(string str, IReadOnlyList<char> set, List<int> lockedIndices)
         {
             int aggregateHashValue = GetAggregateHashValue(str);
 
@@ -180,7 +199,7 @@ namespace PasswordGenerator.Core
             
             lockedIndices.Add(indexInStr);
 
-            char adding = GetAddingChar(str, charSet);
+            char adding = GetAddingChar(str, set);
 
             return str.Substring(0, indexInStr) + adding.ToString() + str.Substring(indexInStr + 1);
         }
@@ -194,7 +213,7 @@ namespace PasswordGenerator.Core
             return aggregateHash;
         }
 
-        private char GetAddingChar(string str, IList<char> charSet)
+        private char GetAddingChar(string str, IReadOnlyList<char> charSet)
         {
             int aggregateHashValue = GetAggregateHashValue(str);
 
